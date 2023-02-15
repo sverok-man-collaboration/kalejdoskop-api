@@ -18,17 +18,15 @@ const corsOptions = {
   origin: "*",
 };
 
-let statistics;
+let db;
 
-jsonData("get");
-function jsonData(getData) {
-  fs.readFile("db.json", (err, data) => {
+jsonData();
+function jsonData() {
+  fs.readFile("./db/db.json", (err, data) => {
     if (err) throw err;
     else {
       const parsedJson = JSON.parse(data);
-      if (getData === "get") {
-        statistics = parsedJson.jsonStatistics;
-      }
+      db = parsedJson;
     }
   });
 }
@@ -39,7 +37,31 @@ app.get("/", (req, res) => {
 });
 
 app.get("/statistics", cors(corsOptions), (req, res) => {
-  res.status(200).json(statistics);
+  res.status(200).json(db.statistics);
+});
+
+app.get("/question1", cors(corsOptions), (req, res) => {
+  res.status(200).json(db.posts.question1);
+});
+
+app.post("/question1", cors(corsOptions), (req, res) => {
+  const { message } = req.body;
+  const messageType = typeof message;
+  if (messageType === "string") {
+    const maxValue = Math.max(...db.posts.question1.map((number) => number.id));
+    console.log(maxValue);
+
+    db.posts.question1.push({ id: maxValue + 1, message: message });
+    const stringifiedJson = JSON.stringify(db);
+    fs.writeFile("./db/db.json", stringifiedJson, (err) => {
+      if (err) throw err;
+      else {
+        res.status(204).end();
+      }
+    });
+  } else {
+    res.status(400).end();
+  }
 });
 
 app.listen(PORT, () => {

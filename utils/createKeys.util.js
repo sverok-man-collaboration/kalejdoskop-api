@@ -1,3 +1,4 @@
+// @ts-nocheck
 const crypto = require("crypto");
 
 function key() {
@@ -12,7 +13,7 @@ function key() {
     )
     .then((key) => {
       crypto.subtle.exportKey("jwk", key).then((exported) => {
-        console.log(`key: ${exported.k}`);
+        console.log(`Random SHA-256 key: ${exported.k}`);
       });
     });
 }

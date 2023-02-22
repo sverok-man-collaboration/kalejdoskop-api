@@ -1,6 +1,7 @@
 // @ts-nocheck
 const crypto = require("crypto");
 
+// Create random SHA-256 key
 function key() {
   crypto.subtle
     .generateKey(

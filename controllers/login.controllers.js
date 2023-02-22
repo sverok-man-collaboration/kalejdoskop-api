@@ -6,6 +6,7 @@ const jwt = require("jsonwebtoken");
 // Model imports
 const { USERS } = require("../models/db.model");
 
+// Email authentication method
 const emailAuth = async (req, res) => {
   const { email } = req.body;
   const user = USERS.find((user) => user.email === email);
@@ -39,6 +40,7 @@ const emailAuth = async (req, res) => {
       res.send("Check your email to finish logging in");
     } catch (error) {
       if (error.responseCode === 535) {
+        console.log(error);
         res.statusMessage = "SMTP Error";
         res.status(535).end();
       } else {
@@ -51,17 +53,18 @@ const emailAuth = async (req, res) => {
   }
 };
 
+// Verify user token method
 const verifyUser = (req, res) => {
   const token = req.query.token;
   if (token === null) {
     return res.status(401).end();
   }
   try {
-    console.log(token);
     const decodedToken = jwt.verify(token, process.env.SECRET_JWT);
     const user = USERS.find((user) => user.id === decodedToken.userId);
     res.send(`Authenticated as ${user.name}`);
   } catch (error) {
+    console.log(error);
     res.status(401).end();
   }
 };

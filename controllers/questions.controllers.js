@@ -2,40 +2,46 @@
 const fs = require("fs");
 
 // Model imports
-const { jsonData } = require("../models/db.model");
+const { jsonData, writeData } = require("../models/db.model");
 
+// Get answer to question 1 method
 const getAnswers1 = async (req, res) => {
   try {
     const db = await jsonData();
     res.status(200).json(db.posts.question1);
   } catch (error) {
+    console.log(error);
     res.status(500).end();
   }
 };
 
+// Add answer to question 1 method
 const addAnswer1 = async (req, res) => {
-  let db;
   try {
-    db = await jsonData();
-  } catch (error) {
-    res.status(500).end();
-  }
-  const { message } = req.body;
-  const messageType = typeof message;
-  if (messageType === "string") {
-    const maxValue = Math.max(...db.posts.question1.map((number) => number.id));
-    console.log(maxValue);
+    const db = await jsonData();
+    const { message } = req.body;
+    const messageType = typeof message;
 
-    db.posts.question1.push({ id: maxValue + 1, message: message });
-    const stringifiedJson = JSON.stringify(db);
-    fs.writeFile("./db/db.json", stringifiedJson, (error) => {
-      if (error) throw error;
-      else {
+    if (messageType === "string") {
+      const maxValue = Math.max(
+        ...db.posts.question1.map((number) => number.id)
+      );
+      db.posts.question1.push({ id: maxValue + 1, message: message });
+      const stringifiedJson = JSON.stringify(db);
+
+      try {
+        await writeData(stringifiedJson);
         res.status(204).end();
+      } catch (error) {
+        console.log(error);
+        res.status(500).end();
       }
-    });
-  } else {
-    res.status(400).end();
+    } else {
+      res.status(400).end();
+    }
+  } catch (error) {
+    console.log(error);
+    res.status(500).end();
   }
 };
 

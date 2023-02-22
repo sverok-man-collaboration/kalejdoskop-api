@@ -10,7 +10,7 @@ const USERS = [
   },
 ];
 
-// Mock db
+// Read from mock db
 function jsonData() {
   return new Promise((resolve, reject) => {
     fs.readFile("./db/db.json", (error, data) => {
@@ -24,4 +24,17 @@ function jsonData() {
   });
 }
 
-module.exports = { USERS, jsonData };
+// Write to mock db
+function writeData(stringifiedJson) {
+  return new Promise((resolve, reject) => {
+    fs.writeFile("./db/db.json", stringifiedJson, (error) => {
+      if (error) {
+        reject(error);
+      } else {
+        resolve();
+      }
+    });
+  });
+}
+
+module.exports = { USERS, jsonData, writeData };

@@ -1,16 +1,17 @@
 // @ts-nocheck
-const fs = require("fs");
+const errorLogging = require("../middlewares/errorLogging");
 
 // Model imports
-const { jsonData, writeData } = require("../models/db.model");
+const { readData, writeData } = require("../models/db.model");
 
 // Get answer to question 1 method
 const getAnswers1 = async (req, res) => {
   try {
-    const db = await jsonData();
+    const db = await readData();
     res.status(200).json(db.posts.question1);
   } catch (error) {
     console.log(error);
+    errorLogging(error, __filename);
     res.status(500).end();
   }
 };
@@ -18,7 +19,7 @@ const getAnswers1 = async (req, res) => {
 // Add answer to question 1 method
 const addAnswer1 = async (req, res) => {
   try {
-    const db = await jsonData();
+    const db = await readData();
     const { message } = req.body;
     const messageType = typeof message;
 
@@ -34,6 +35,7 @@ const addAnswer1 = async (req, res) => {
         res.status(204).end();
       } catch (error) {
         console.log(error);
+        errorLogging(error, __filename);
         res.status(500).end();
       }
     } else {
@@ -41,6 +43,7 @@ const addAnswer1 = async (req, res) => {
     }
   } catch (error) {
     console.log(error);
+    errorLogging(error, __filename);
     res.status(500).end();
   }
 };

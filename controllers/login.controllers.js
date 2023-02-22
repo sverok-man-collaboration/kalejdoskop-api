@@ -2,6 +2,7 @@
 require("dotenv").config();
 const nodemailer = require("nodemailer");
 const jwt = require("jsonwebtoken");
+const errorLogging = require("../middlewares/errorLogging");
 
 // Model imports
 const { USERS } = require("../models/db.model");
@@ -42,9 +43,11 @@ const emailAuth = async (req, res) => {
       if (error.responseCode === 535) {
         console.log(error);
         res.statusMessage = "SMTP Error";
+        errorLogging(error, __filename);
         res.status(535).end();
       } else {
         console.log(error);
+        errorLogging(error, __filename);
         res.status(500).end();
       }
     }

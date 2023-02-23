@@ -1,15 +1,6 @@
 // @ts-nocheck
 const fs = require("fs");
 
-// Mock users
-const USERS = [
-  {
-    id: 1,
-    email: "email",
-    name: "name",
-  },
-];
-
 // Read from mock db
 function readData() {
   return new Promise((resolve, reject) => {
@@ -37,4 +28,4 @@ function writeData(stringifiedJson) {
   });
 }
 
-module.exports = { USERS, readData, writeData };
+module.exports = { readData, writeData };

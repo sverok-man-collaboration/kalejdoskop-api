@@ -5,12 +5,20 @@ const jwt = require("jsonwebtoken");
 const errorLogging = require("../middlewares/errorLogging");
 
 // Model imports
-const { USERS } = require("../models/db.model");
+const { readData } = require("../models/db.model");
 
 // Email authentication method
 const emailAuth = async (req, res) => {
   const { email } = req.body;
-  const user = USERS.find((user) => user.email === email);
+  let user;
+  try {
+    const db = await readData();
+    user = db.users.admin.find((user) => user.email === email);
+  } catch (error) {
+    console.log(error);
+    errorLogging(error, __filename);
+    res.status(500).end();
+  }
 
   if (user) {
     const token = jwt.sign({ userId: user.id }, process.env.SECRET_JWT, {
@@ -57,15 +65,25 @@ const emailAuth = async (req, res) => {
 };
 
 // Verify user token method
-const verifyUser = (req, res) => {
+const verifyUser = async (req, res) => {
   const token = req.query.token;
 
   if (token === null) {
     return res.status(401).end();
   }
+
   try {
     const decodedToken = jwt.verify(token, process.env.SECRET_JWT);
-    const user = USERS.find((user) => user.id === decodedToken.userId);
+    let user;
+    try {
+      const db = await readData();
+      user = db.users.admin.find((user) => user.id === decodedToken.userId);
+    } catch (error) {
+      console.log(error);
+      errorLogging(error, __filename);
+      res.status(500).end();
+    }
+
     res.send(`Authenticated as ${user.name}`);
   } catch (error) {
     console.log(error);

@@ -5,7 +5,7 @@ const router = express.Router();
 // Controller imports
 const { emailAuth, verifyUser } = require("../controllers/login.controllers");
 
-// Login request
+// Login with email request
 router.post("/", emailAuth);
 
 // Verify user

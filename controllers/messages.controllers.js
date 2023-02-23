@@ -4,11 +4,11 @@ const errorLogging = require("../middlewares/errorLogging");
 // Model imports
 const { readData, writeData } = require("../models/db.model");
 
-// Get all statistics method
-const allStatistics = async (req, res) => {
+// Get answer to question 1 method
+const getAnswers1 = async (req, res) => {
   try {
     const db = await readData();
-    res.status(200).json(db.statistics);
+    res.status(200).json(db.posts.question1);
   } catch (error) {
     console.log(error);
     errorLogging(error, __filename);
@@ -16,12 +16,12 @@ const allStatistics = async (req, res) => {
   }
 };
 
-// Post statistics to question 1 method
-const postStatistics = async (req, res) => {
-  const { answer } = req.body;
-  const answerType = typeof answer;
+// Post answer to question 1 method
+const postAnswer1 = async (req, res) => {
+  const { message } = req.body;
+  const messageType = typeof message;
 
-  if (answerType === "string") {
+  if (messageType === "string") {
     let db;
 
     try {
@@ -32,14 +32,8 @@ const postStatistics = async (req, res) => {
       res.status(500).end();
     }
 
-    const maxValue = Math.max(
-      ...db.statistics.question1.map((number) => number.id)
-    );
-    db.statistics.question1.push({
-      id: maxValue + 1,
-      question: "Send dick pick to partner?",
-      answer: answer,
-    });
+    const maxValue = Math.max(...db.posts.question1.map((number) => number.id));
+    db.posts.question1.push({ id: maxValue + 1, message: message });
     const stringifiedJson = JSON.stringify(db);
 
     try {
@@ -55,4 +49,4 @@ const postStatistics = async (req, res) => {
   }
 };
 
-module.exports = { allStatistics, postStatistics };
+module.exports = { getAnswers1, postAnswer1 };

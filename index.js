@@ -7,7 +7,8 @@ const secretKey = require("./utils/createKey.util");
 
 // Route imports
 const loginRoutes = require("./routes/login.routes");
-const questionRoutes = require("./routes/questions.routes");
+const usersRoutes = require("./routes/users.routes");
+const messagesRoutes = require("./routes/messages.routes");
 const statisticsRoutes = require("./routes/statistics.routes");
 
 const app = express();
@@ -35,7 +36,8 @@ app.use(express.static("public/dist", cors(corsOptions)));
 
 // Routes
 app.use("/", cors(corsOptions), loginRoutes);
-app.use("/question", cors(corsOptions), questionRoutes);
+app.use("/users", cors(corsOptions), usersRoutes);
+app.use("/messages", cors(corsOptions), messagesRoutes);
 app.use("/statistics", cors(corsOptions), statisticsRoutes);
 
 app.listen(PORT, () => {

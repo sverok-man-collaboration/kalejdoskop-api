@@ -59,6 +59,7 @@ const emailAuth = async (req, res) => {
 // Verify user token method
 const verifyUser = (req, res) => {
   const token = req.query.token;
+
   if (token === null) {
     return res.status(401).end();
   }

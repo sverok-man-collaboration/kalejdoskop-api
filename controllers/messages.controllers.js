@@ -1,5 +1,5 @@
 // @ts-nocheck
-const errorLogging = require("../middlewares/errorLogging");
+const errorLogging = require("../middlewares/error-logging");
 
 // Model imports
 const { readData, writeData } = require("../models/db.model");
@@ -49,4 +49,10 @@ const postAnswer1 = async (req, res) => {
   }
 };
 
-module.exports = { getAnswers1, postAnswer1 };
+// Patch answer to question 1 method
+const patchAnswer1 = (req, res) => {};
+
+// Delete answer to question 1 method
+const deleteAnswer1 = (req, res) => {};
+
+module.exports = { getAnswers1, postAnswer1, patchAnswer1, deleteAnswer1 };

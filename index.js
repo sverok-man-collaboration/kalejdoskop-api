@@ -3,7 +3,7 @@ const express = require("express");
 const cors = require("cors");
 const helmet = require("helmet");
 const bodyParser = require("body-parser");
-const secretKey = require("./utils/createKey.util");
+const secretKey = require("./utils/create-key.util");
 
 // Route imports
 const loginRoutes = require("./routes/login.routes");

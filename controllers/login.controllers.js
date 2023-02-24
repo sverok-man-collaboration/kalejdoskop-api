@@ -2,7 +2,7 @@
 require("dotenv").config();
 const nodemailer = require("nodemailer");
 const jwt = require("jsonwebtoken");
-const errorLogging = require("../middlewares/errorLogging");
+const errorLogging = require("../middlewares/error-logging");
 
 // Model imports
 const { readData } = require("../models/db.model");

@@ -1,5 +1,5 @@
 // @ts-nocheck
-const errorLogging = require("../middlewares/errorLogging");
+const errorLogging = require("../middlewares/error-logging");
 
 // Model imports
 const { readData, writeData } = require("../models/db.model");

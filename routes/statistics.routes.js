@@ -8,10 +8,10 @@ const {
   postStatistics,
 } = require("../controllers/statistics.controllers");
 
-// Get all statistics
+// Get all statistics route
 router.get("/", allStatistics);
 
-// Post statistics to question 1
+// Post statistics to question 1 route
 router.post("/1", postStatistics);
 
 module.exports = router;

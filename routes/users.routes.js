@@ -9,13 +9,13 @@ const {
   deleteUser,
 } = require("../controllers/users.controllers");
 
-// Get all users request
+// Get all users route
 router.get("/", allUsers);
 
-// Post user request
+// Post user route
 router.post("/", postUser);
 
-// Delete user request
+// Delete user route
 router.delete("/", deleteUser);
 
 module.exports = router;

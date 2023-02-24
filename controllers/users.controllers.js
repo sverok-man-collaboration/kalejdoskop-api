@@ -1,11 +1,11 @@
-// @ts-nocheck
 const errorLogging = require("../middlewares/error-logging");
 
 // Model imports
 const { readData, writeData } = require("../models/db.model");
 
 // Get all users method
-const allUsers = async (req, res) => {
+
+const allUsers = async (_req, res) => {
   try {
     const db = await readData();
     res.status(200).json(db.users);
@@ -24,7 +24,6 @@ const postUser = async (req, res) => {
 
   if (emailType === "string" && nameType === "string") {
     let db;
-    let user = true;
 
     try {
       db = await readData();
@@ -34,11 +33,20 @@ const postUser = async (req, res) => {
       res.status(500).end();
     }
 
+    /** @type {string} */
     const emailLowercase = email.toLowerCase();
-    user = db.users.admin.filter((user) => user.email === emailLowercase);
+
+    /** @type {Array<string>} */
+    const user = db.users.admin.filter(
+      (/** @type {{ email: string; }} */ user) => user.email === emailLowercase
+    );
 
     if (user.length < 1) {
-      const maxValue = Math.max(...db.users.admin.map((number) => number.id));
+      const maxValue = Math.max(
+        ...db.users.admin.map(
+          (/** @type {{ id: number; }} */ number) => number.id
+        )
+      );
       db.users.admin.push({
         id: maxValue + 1,
         email: email,
@@ -61,6 +69,6 @@ const postUser = async (req, res) => {
 };
 
 // Delete user method
-const deleteUser = (req, res) => {};
+const deleteUser = (_req, _res) => {};
 
 module.exports = { allUsers, postUser, deleteUser };

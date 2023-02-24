@@ -1,11 +1,10 @@
-// @ts-nocheck
 const errorLogging = require("../middlewares/error-logging");
 
 // Model imports
 const { readData, writeData } = require("../models/db.model");
 
 // Get answer to question 1 method
-const getAnswers1 = async (req, res) => {
+const getAnswers1 = async (_req, res) => {
   try {
     const db = await readData();
     res.status(200).json(db.posts.question1);
@@ -32,7 +31,11 @@ const postAnswer1 = async (req, res) => {
       res.status(500).end();
     }
 
-    const maxValue = Math.max(...db.posts.question1.map((number) => number.id));
+    const maxValue = Math.max(
+      ...db.posts.question1.map(
+        (/** @type {{ id: number; }} */ number) => number.id
+      )
+    );
     db.posts.question1.push({ id: maxValue + 1, message: message });
     const stringifiedJson = JSON.stringify(db);
 
@@ -50,9 +53,9 @@ const postAnswer1 = async (req, res) => {
 };
 
 // Patch answer to question 1 method
-const patchAnswer1 = (req, res) => {};
+const patchAnswer1 = (_req, _res) => {};
 
 // Delete answer to question 1 method
-const deleteAnswer1 = (req, res) => {};
+const deleteAnswer1 = (_req, _res) => {};
 
 module.exports = { getAnswers1, postAnswer1, patchAnswer1, deleteAnswer1 };

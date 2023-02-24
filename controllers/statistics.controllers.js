@@ -1,11 +1,10 @@
-// @ts-nocheck
 const errorLogging = require("../middlewares/error-logging");
 
 // Model imports
 const { readData, writeData } = require("../models/db.model");
 
 // Get all statistics method
-const allStatistics = async (req, res) => {
+const allStatistics = async (_req, res) => {
   try {
     const db = await readData();
     res.status(200).json(db.statistics);
@@ -33,7 +32,9 @@ const postStatistics = async (req, res) => {
     }
 
     const maxValue = Math.max(
-      ...db.statistics.question1.map((number) => number.id)
+      ...db.statistics.question1.map(
+        (/** @type {{ id: number; }} */ number) => number.id
+      )
     );
     db.statistics.question1.push({
       id: maxValue + 1,

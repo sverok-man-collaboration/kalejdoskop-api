@@ -1,4 +1,3 @@
-// @ts-nocheck
 require("dotenv").config();
 const nodemailer = require("nodemailer");
 const jwt = require("jsonwebtoken");
@@ -11,9 +10,12 @@ const { readData } = require("../models/db.model");
 const emailAuth = async (req, res) => {
   const { email } = req.body;
   let user;
+
   try {
     const db = await readData();
-    user = db.users.admin.find((user) => user.email === email);
+    user = db.users.admin.find(
+      (/** @type {{ email: string; }} */ user) => user.email === email
+    );
   } catch (error) {
     console.log(error);
     errorLogging(error, __filename);
@@ -21,43 +23,53 @@ const emailAuth = async (req, res) => {
   }
 
   if (user) {
-    const token = jwt.sign({ userId: user.id }, process.env.SECRET_JWT, {
-      expiresIn: "1h",
-    });
+    const secret = process.env.SECRET_JWT;
 
-    async function main() {
-      let transporter = nodemailer.createTransport({
-        host: "smtp.gmail.com",
-        port: 587,
-        secure: false,
-        auth: {
-          user: process.env.SECRET_USER,
-          pass: process.env.SECRET_PASS,
-        },
+    if (secret) {
+      const token = jwt.sign({ userId: user.id }, secret, {
+        expiresIn: "1h",
       });
 
-      let info = await transporter.sendMail({
-        to: `${email}`,
-        subject: "Finish logging in",
-        html: `<a href="http://localhost:4000/verify?token=${token}">Login</a>`,
-      });
+      async function main() {
+        let transporter = nodemailer.createTransport({
+          host: "smtp.gmail.com",
+          port: 587,
+          secure: false,
+          auth: {
+            user: process.env.SECRET_USER,
+            pass: process.env.SECRET_PASS,
+          },
+        });
 
-      console.log("Message sent: %s", info.messageId);
-    }
-    try {
-      await main();
-      res.send("Check your email to finish logging in");
-    } catch (error) {
-      if (error.responseCode === 535) {
-        console.log(error);
-        res.statusMessage = "SMTP Error";
-        errorLogging(error, __filename);
-        res.status(535).end();
-      } else {
-        console.log(error);
-        errorLogging(error, __filename);
-        res.status(500).end();
+        let info = await transporter.sendMail({
+          to: `${email}`,
+          subject: "Finish logging in",
+          html: `<a href="http://localhost:4000/verify?token=${token}">Login</a>`,
+        });
+
+        console.log("Message sent: %s", info.messageId);
       }
+
+      try {
+        await main();
+        res.send("Check your email to finish logging in");
+      } catch (error) {
+        if (error.responseCode === 535) {
+          console.log(error);
+          res.statusMessage = "SMTP Error";
+          errorLogging(error, __filename);
+          res.status(535).end();
+        } else {
+          console.log(error);
+          errorLogging(error, __filename);
+          res.status(500).end();
+        }
+      }
+    } else {
+      const errorMessage = "process.env.SECRET_JWT is undefined";
+      console.log(errorMessage);
+      errorLogging(errorMessage, __filename);
+      res.status(500).end();
     }
   } else {
     res.send("Check your email to finish logging in");
@@ -73,18 +85,41 @@ const verifyUser = async (req, res) => {
   }
 
   try {
-    const decodedToken = jwt.verify(token, process.env.SECRET_JWT);
-    let user;
-    try {
-      const db = await readData();
-      user = db.users.admin.find((user) => user.id === decodedToken.userId);
-    } catch (error) {
-      console.log(error);
-      errorLogging(error, __filename);
+    const secret = process.env.SECRET_JWT;
+
+    if (secret) {
+      try {
+        const decodedToken = jwt.verify(token, secret);
+
+        if (typeof decodedToken === "string" || !decodedToken.userId) {
+          throw new Error("Invalid token");
+        }
+        let user;
+
+        try {
+          const db = await readData();
+          user = db.users.admin.find(
+            (/** @type {{ id: number; }} */ user) =>
+              user.id === decodedToken.userId
+          );
+        } catch (error) {
+          console.log(error);
+          errorLogging(error, __filename);
+          res.status(500).end();
+        }
+
+        res.send(`Authenticated as ${user.name}`);
+      } catch (error) {
+        console.log("Invalid token");
+        errorLogging("Invalid token", __filename);
+        res.status(500).end();
+      }
+    } else {
+      const errorMessage = "process.env.SECRET_JWT is undefined";
+      console.log(errorMessage);
+      errorLogging(errorMessage, __filename);
       res.status(500).end();
     }
-
-    res.send(`Authenticated as ${user.name}`);
   } catch (error) {
     console.log(error);
     res.status(401).end();

@@ -1,4 +1,3 @@
-// @ts-nocheck
 const fs = require("fs");
 
 // Read from mock db
@@ -8,14 +7,18 @@ function readData() {
       if (error) {
         reject(error);
       } else {
-        const parsedJson = JSON.parse(data);
+        const parsedJson = JSON.parse(data.toString());
         resolve(parsedJson);
       }
     });
   });
 }
 
-// Write to mock db
+/**
+ * Write to mock db
+ * @param {string} stringifiedJson
+ * @returns {Promise<void>}
+ */
 function writeData(stringifiedJson) {
   return new Promise((resolve, reject) => {
     fs.writeFile("./database/db.json", stringifiedJson, (error) => {

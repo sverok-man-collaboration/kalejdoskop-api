@@ -1,13 +1,14 @@
-const express = require("express");
-const router = express.Router();
+import { Router } from "express";
 
 // Controller imports
-const {
+import {
   getAnswers1,
   postAnswer1,
   patchAnswer1,
   deleteAnswer1,
-} = require("../controllers/messages.controllers");
+} from "../controllers/messages.controllers.mjs";
+
+const router = Router();
 
 // Get answers to question 1 route
 router.get("/1", getAnswers1);
@@ -21,4 +22,4 @@ router.patch("/1", patchAnswer1);
 // Delete answer to question 1 route
 router.delete("/1", deleteAnswer1);
 
-module.exports = router;
+export default router;

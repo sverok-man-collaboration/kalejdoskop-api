@@ -1,7 +1,7 @@
-const errorLogging = require("../middlewares/error-logging");
+import errorLogging from "../middlewares/error-logging.mjs";
 
 // Model imports
-const { readData, writeData } = require("../models/db.model");
+import { readData, writeData } from "../models/db.model.mjs";
 
 // Get answer to question 1 method
 const getAnswers1 = async (_req, res) => {
@@ -58,4 +58,4 @@ const patchAnswer1 = (_req, _res) => {};
 // Delete answer to question 1 method
 const deleteAnswer1 = (_req, _res) => {};
 
-module.exports = { getAnswers1, postAnswer1, patchAnswer1, deleteAnswer1 };
+export { getAnswers1, postAnswer1, patchAnswer1, deleteAnswer1 };

@@ -1,10 +1,12 @@
-require("dotenv").config();
-const nodemailer = require("nodemailer");
-const jwt = require("jsonwebtoken");
-const errorLogging = require("../middlewares/error-logging");
+import * as dotenv from "dotenv";
+dotenv.config();
+import { createTransport } from "nodemailer";
+import pkg from "jsonwebtoken";
+const { sign, verify } = pkg;
+import errorLogging from "../middlewares/error-logging.mjs";
 
 // Model imports
-const { readData } = require("../models/db.model");
+import { readData } from "../models/db.model.mjs";
 
 // Email authentication method
 const emailAuth = async (req, res) => {
@@ -26,12 +28,12 @@ const emailAuth = async (req, res) => {
     const secret = process.env.SECRET_JWT;
 
     if (secret) {
-      const token = jwt.sign({ userId: user.id }, secret, {
+      const token = sign({ userId: user.id }, secret, {
         expiresIn: "1h",
       });
 
       async function main() {
-        let transporter = nodemailer.createTransport({
+        let transporter = createTransport({
           host: "smtp.gmail.com",
           port: 587,
           secure: false,
@@ -89,7 +91,7 @@ const verifyUser = async (req, res) => {
 
     if (secret) {
       try {
-        const decodedToken = jwt.verify(token, secret);
+        const decodedToken = verify(token, secret);
 
         if (typeof decodedToken === "string" || !decodedToken.userId) {
           throw new Error("Invalid token");
@@ -126,7 +128,4 @@ const verifyUser = async (req, res) => {
   }
 };
 
-module.exports = {
-  emailAuth,
-  verifyUser,
-};
+export { emailAuth, verifyUser };

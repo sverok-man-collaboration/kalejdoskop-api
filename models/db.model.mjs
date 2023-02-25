@@ -1,9 +1,9 @@
-const fs = require("fs");
+import { readFile, writeFile } from "fs";
 
 // Read from mock db
 function readData() {
   return new Promise((resolve, reject) => {
-    fs.readFile("./database/db.json", (error, data) => {
+    readFile("./database/db.json", (error, data) => {
       if (error) {
         reject(error);
       } else {
@@ -21,7 +21,7 @@ function readData() {
  */
 function writeData(stringifiedJson) {
   return new Promise((resolve, reject) => {
-    fs.writeFile("./database/db.json", stringifiedJson, (error) => {
+    writeFile("./database/db.json", stringifiedJson, (error) => {
       if (error) {
         reject(error);
       } else {
@@ -31,4 +31,4 @@ function writeData(stringifiedJson) {
   });
 }
 
-module.exports = { readData, writeData };
+export { readData, writeData };

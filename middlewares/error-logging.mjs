@@ -1,6 +1,6 @@
-const fs = require("fs");
+import { createWriteStream } from "fs";
 
-const logFile = fs.createWriteStream("server-error.log", { flags: "a" });
+const logFile = createWriteStream("server-error.log", { flags: "a" });
 const timestamp = new Date().toLocaleString();
 
 /**
@@ -13,4 +13,4 @@ function errorLogging(error, path) {
   );
 }
 
-module.exports = errorLogging;
+export default errorLogging;

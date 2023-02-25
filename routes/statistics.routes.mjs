@@ -1,11 +1,12 @@
-const express = require("express");
-const router = express.Router();
+import { Router } from "express";
 
 // Controller imports
-const {
+import {
   allStatistics,
   postStatistics,
-} = require("../controllers/statistics.controllers");
+} from "../controllers/statistics.controllers.mjs";
+
+const router = Router();
 
 // Get all statistics route
 router.get("/", allStatistics);
@@ -13,4 +14,4 @@ router.get("/", allStatistics);
 // Post statistics to question 1 route
 router.post("/1", postStatistics);
 
-module.exports = router;
+export default router;

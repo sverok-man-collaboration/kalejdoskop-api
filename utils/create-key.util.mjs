@@ -1,8 +1,8 @@
-const crypto = require("crypto");
+import { subtle } from "crypto";
 
 // Create random SHA-256 key
 function SHAKey() {
-  crypto.subtle
+  subtle
     .generateKey(
       {
         name: "HMAC",
@@ -12,10 +12,10 @@ function SHAKey() {
       ["sign", "verify"]
     )
     .then((key) => {
-      crypto.subtle.exportKey("jwk", key).then((exported) => {
+      subtle.exportKey("jwk", key).then((exported) => {
         console.log(`Random SHA-256 key: ${exported.k}`);
       });
     });
 }
 
-module.exports = SHAKey;
+export { SHAKey };

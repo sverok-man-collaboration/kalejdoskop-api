@@ -1,7 +1,7 @@
-const errorLogging = require("../middlewares/error-logging");
+import errorLogging from "../middlewares/error-logging.mjs";
 
 // Model imports
-const { readData, writeData } = require("../models/db.model");
+import { readData, writeData } from "../models/db.model.mjs";
 
 // Get all statistics method
 const allStatistics = async (_req, res) => {
@@ -56,4 +56,4 @@ const postStatistics = async (req, res) => {
   }
 };
 
-module.exports = { allStatistics, postStatistics };
+export { allStatistics, postStatistics };

@@ -5,7 +5,7 @@ import errorLogging from "../middlewares/error-logging.mjs";
 import { readData, writeData } from "../models/db.model.mjs";
 
 // Type imports
-import type { Database } from "../types/controllers.types.js";
+import type { Database } from "../types/controllers/controllers.js";
 
 // Get all users method
 const allUsers = async (_req: Request, res: Response) => {
@@ -49,6 +49,8 @@ const postUser = async (req: Request, res: Response) => {
           errorLogging(error, __filename);
           res.status(500).end();
         }
+      } else {
+        res.status(409).end();
       }
     } catch (error) {
       console.log(error);

@@ -15,7 +15,7 @@ interface User {
   name: string;
 }
 
-interface Database {
+export interface Database {
   statistics: {
     question1: Answer[];
   };
@@ -26,5 +26,3 @@ interface Database {
     admin: User[];
   };
 }
-
-export { Database };

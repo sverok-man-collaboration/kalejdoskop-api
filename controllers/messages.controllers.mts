@@ -5,7 +5,7 @@ import errorLogging from "../middlewares/error-logging.mjs";
 import { readData, writeData } from "../models/db.model.mjs";
 
 // Type imports
-import type { Database } from "../types/controllers.types.js";
+import type { Database } from "../types/controllers/controllers.js";
 
 // Get answer to question 1 method
 const getAnswers1 = async (_req: Request, res: Response) => {

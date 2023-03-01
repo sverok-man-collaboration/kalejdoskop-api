@@ -58,9 +58,6 @@ const corsOptions = {
   origin: "*",
 };
 
-// Render adminpanel website
-app.use(express.static("public/dist"));
-
 // Routes
 app.use("/", cors(corsOptions), loginRoutes);
 app.use("/users", cors(corsOptions), usersRoutes);

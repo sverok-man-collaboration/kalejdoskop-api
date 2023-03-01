@@ -7,20 +7,16 @@ function readData() {
       if (error) {
         reject(error);
       } else {
-        const parsedJson = JSON.parse(data.toString());
+        const parsedJson: object = JSON.parse(data.toString());
         resolve(parsedJson);
       }
     });
   });
 }
 
-/**
- * Write to mock db
- * @param {string} stringifiedJson
- * @returns {Promise<void>}
- */
-function writeData(stringifiedJson) {
-  return new Promise((resolve, reject) => {
+// Write to mock db
+function writeData(stringifiedJson: string) {
+  return new Promise<void>((resolve, reject) => {
     writeFile("./database/db.json", stringifiedJson, (error) => {
       if (error) {
         reject(error);

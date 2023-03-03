@@ -68,7 +68,6 @@ const patchAnswer1 = async (req: Request, res: Response) => {
         const messageIndex = db.posts.question1.findIndex((message) => {
           return message.id === id;
         });
-        console.log(messageIndex);
         db.posts.question1.push({ id: id, message: message });
         db.posts.question1.splice(messageIndex, 1);
         const stringifiedJson = JSON.stringify(db);

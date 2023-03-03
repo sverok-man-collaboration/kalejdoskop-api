@@ -52,7 +52,43 @@ const postAnswer1 = async (req: Request, res: Response) => {
 };
 
 // Patch answer to question 1 method
-const patchAnswer1 = (_req: Request, _res: Response) => {};
+const patchAnswer1 = async (req: Request, res: Response) => {
+  const { id, message } = req.body;
+  const idType = typeof id;
+  const messageType = typeof message;
+
+  if (idType === "number" && messageType === "string") {
+    try {
+      const db = (await readData()) as Database;
+      const messageFound = db.posts.question1.find(
+        (message) => message.id === id
+      );
+
+      if (messageFound) {
+        db.posts.question1.push({ id: id, message: message });
+        db.posts.question1.splice(id - 1, 1);
+        const stringifiedJson = JSON.stringify(db);
+
+        try {
+          await writeData(stringifiedJson);
+          res.status(204).end();
+        } catch (error) {
+          console.log(error);
+          errorLogging(error, __filename);
+          res.status(500).end();
+        }
+      } else {
+        res.status(409).end();
+      }
+    } catch (error) {
+      console.log(error);
+      errorLogging(error, __filename);
+      res.status(500).end();
+    }
+  } else {
+    res.status(400).end();
+  }
+};
 
 // Delete answer to question 1 method
 const deleteAnswer1 = (_req: Request, _res: Response) => {};

@@ -51,11 +51,7 @@ const emailAuth = async (req: Request, res: Response) => {
           await main();
           res.send("Check your email to finish logging in");
         } catch (error) {
-          if (
-            typeof error === "object" &&
-            error !== null &&
-            "responseCode" in error
-          ) {
+          if (typeof error === "object" && error && "responseCode" in error) {
             if (error.responseCode === 535) {
               console.log(error);
               res.statusMessage = "SMTP Error";

@@ -1,28 +1,39 @@
-interface Answer {
-  id: number;
-  question: string;
-  answer: boolean;
-}
-
-interface Message {
-  id: number;
-  message: string;
-}
-
 interface User {
   id: number;
   email: string;
   name: string;
 }
 
-export interface Database {
-  statistics: {
-    question1: Answer[];
-  };
-  posts: {
-    question1: Message[];
-  };
-  users: {
-    admin: User[];
-  };
+interface Post {
+  id: number;
+  timestamp: string;
+  room: string;
+  object: string;
+  message: string;
+  status: string;
 }
+
+interface GameStatistic {
+  id: number;
+  timeStamp: string;
+  answerId: number;
+}
+
+interface Question {
+  id: number;
+  question: string;
+  character: string;
+}
+
+interface Answer {
+  id: number;
+  answer: string;
+  questionId: number;
+}
+
+interface GameDownloaded {
+  id: number;
+  timestamp: string;
+}
+
+export { User, Post, GameStatistic, Question, Answer, GameDownloaded };

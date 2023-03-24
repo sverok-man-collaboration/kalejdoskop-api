@@ -10,7 +10,7 @@ import errorLogging from "../middlewares/error-logging.mjs";
 import { readData } from "../models/db.model.mjs";
 
 // Type imports
-import type { Database } from "../types/controllers/controllers.js";
+import type { Database } from "../types/controllers/database.js";
 
 // Email authentication method
 const emailAuth = async (req: Request, res: Response) => {

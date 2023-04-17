@@ -2,14 +2,15 @@ import { PrismaClient } from "@prisma/client";
 import errorLogging from "../middlewares/error-logging.mjs";
 
 // Types import
-import type { User } from "../types/controllers/controllers.js";
+import type { Post } from "../types/controllers/controllers.js";
 
 const prisma = new PrismaClient();
 
-async function getAllUsers() {
-  let users: User[] | [] = [];
+async function getAllPosts() {
+  let posts: Post[] | [] = [];
   async function main() {
-    users = await prisma.user.findMany();
+    posts =
+      await prisma.$queryRaw`SELECT * FROM "Post" ORDER BY FIELD(status, 'pending', 'approved', 'denied')`;
   }
 
   await main()
@@ -22,15 +23,16 @@ async function getAllUsers() {
       await prisma.$disconnect();
       process.exit(1);
     });
-  return users;
+  return posts;
 }
 
-async function addUser(email: string, name: string) {
+async function addPost(room: string, object: string, message: string) {
   async function main() {
-    await prisma.user.create({
+    await prisma.post.create({
       data: {
-        email: email,
-        name: name,
+        room: room,
+        object: object,
+        message: message,
       },
     });
   }
@@ -47,39 +49,15 @@ async function addUser(email: string, name: string) {
     });
 }
 
-async function verifyUserEmail(email: string) {
-  let user: User[] | [] = [];
+async function getPost(id: number) {
+  let post: Post[] | [] = [];
   async function main() {
-    const result = await prisma.user.findUnique({
-      where: {
-        email: email,
-      },
-    });
-    user = result ? [result] : [];
-  }
-
-  await main()
-    .then(async () => {
-      await prisma.$disconnect();
-    })
-    .catch(async (error) => {
-      console.error(error);
-      errorLogging(error, __filename);
-      await prisma.$disconnect();
-      process.exit(1);
-    });
-  return user;
-}
-
-async function verifyUserId(id: number) {
-  let user: User[] | [] = [];
-  async function main() {
-    const result = await prisma.user.findUnique({
+    const result = await prisma.post.findUnique({
       where: {
         id: id,
       },
     });
-    user = result ? [result] : [];
+    post = result ? [result] : [];
   }
 
   await main()
@@ -92,15 +70,19 @@ async function verifyUserId(id: number) {
       await prisma.$disconnect();
       process.exit(1);
     });
-  return user;
+  return post;
 }
 
-async function removeUser(id: number) {
+async function updatePost(id: number, status: string) {
   async function main() {
-    const result = await prisma.user.delete({
-      where: { id: id },
+    await prisma.post.update({
+      where: {
+        id: id,
+      },
+      data: {
+        status: status,
+      },
     });
-    console.log(result);
   }
 
   await main()
@@ -115,4 +97,4 @@ async function removeUser(id: number) {
     });
 }
 
-export { getAllUsers, addUser, verifyUserEmail, verifyUserId, removeUser };
+export { getAllPosts, addPost, getPost, updatePost };

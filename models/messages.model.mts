@@ -26,6 +26,26 @@ async function getAllPosts() {
   return posts;
 }
 
+async function getThreeRandomPosts() {
+  let posts: Post[] | [] = [];
+  async function main() {
+    posts =
+      await prisma.$queryRaw`SELECT * FROM "Post" ORDER BY RANDOM() LIMIT 3`;
+  }
+
+  await main()
+    .then(async () => {
+      await prisma.$disconnect();
+    })
+    .catch(async (error) => {
+      console.error(error);
+      errorLogging(error, __filename);
+      await prisma.$disconnect();
+      process.exit(1);
+    });
+  return posts;
+}
+
 async function addPost(room: string, object: string, message: string) {
   async function main() {
     await prisma.post.create({
@@ -97,4 +117,4 @@ async function updatePost(id: number, status: string) {
     });
 }
 
-export { getAllPosts, addPost, getPost, updatePost };
+export { getAllPosts, getThreeRandomPosts, addPost, getPost, updatePost };

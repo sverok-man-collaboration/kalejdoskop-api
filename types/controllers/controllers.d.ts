@@ -6,7 +6,7 @@ interface User {
 
 interface Post {
   id: number;
-  timestamp: string;
+  timestamp: Date;
   room: string;
   object: string;
   message: string;
@@ -15,7 +15,7 @@ interface Post {
 
 interface GameStatistic {
   id: number;
-  timeStamp: string;
+  timestamp: Date;
   answerId: number;
 }
 
@@ -33,7 +33,7 @@ interface Answer {
 
 interface GameDownloaded {
   id: number;
-  timestamp: string;
+  timestamp: Date;
 }
 
 export { User, Post, GameStatistic, Question, Answer, GameDownloaded };

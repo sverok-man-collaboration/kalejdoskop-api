@@ -5,7 +5,7 @@ import errorLogging from "../middlewares/error-logging.mjs";
 import {
   getAllUsers,
   addUser,
-  getUser,
+  verifyUserEmail,
   removeUser,
 } from "../models/users.model.mjs";
 
@@ -30,7 +30,7 @@ const postUser = async (req: Request, res: Response) => {
   if (emailType === "string" && nameType === "string") {
     try {
       const emailLowercase: string = email.toLowerCase();
-      const data = await getUser(emailLowercase);
+      const data = await verifyUserEmail(emailLowercase);
       if (data.length < 1) {
         try {
           await addUser(emailLowercase, name);

@@ -3,6 +3,7 @@
   "display": "Node LTS + ESM + Strictest",
   "_version": "18.12.1",
   "compilerOptions": {
+    "ignoreDeprecations": "5.0",
     "lib": ["es2022"],
     "module": "es2022",
     "target": "es2022",

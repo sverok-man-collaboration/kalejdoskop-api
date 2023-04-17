@@ -10,7 +10,7 @@
     "build": "tsc --project tsconfig.json && copyfiles .env dist && copyfiles database/db.json dist/database"
   },
   "engines": {
-    "node": "18.14.2"
+    "node": "18.16.0"
   },
   "dependencies": {
     "@prisma/client": "^4.11.0",

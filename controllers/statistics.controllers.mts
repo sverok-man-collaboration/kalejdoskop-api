@@ -2,16 +2,16 @@ import type { Request, Response } from "express";
 import errorLogging from "../middlewares/error-logging.mjs";
 
 // Model imports
-import { readData, writeData } from "../models/db.model.mjs";
-
-// Type imports
-import type { Database } from "../types/controllers/database.js";
+import {
+  getAllGameStatistics,
+  addGameStatistic,
+} from "../models/statistics.model.mjs";
 
 // Get all statistics method
 const allStatistics = async (_req: Request, res: Response) => {
   try {
-    const db = (await readData()) as Database;
-    res.status(200).json(db.statistics);
+    const data = await getAllGameStatistics();
+    res.status(200).json(data);
   } catch (error) {
     console.log(error);
     errorLogging(error, __filename);
@@ -19,32 +19,14 @@ const allStatistics = async (_req: Request, res: Response) => {
   }
 };
 
-// Post statistics to question 1 method
+// Post statistic method
 const postStatistics = async (req: Request, res: Response) => {
-  const { answer } = req.body;
-  const answerType = typeof answer;
-
-  if (answerType === "string") {
+  const { answerId } = req.body;
+  const idType = typeof answerId;
+  if (idType === "number") {
     try {
-      const db = (await readData()) as Database;
-      const maxValue = Math.max(
-        ...db.statistics.question1.map((number) => number.id)
-      );
-      db.statistics.question1.push({
-        id: maxValue + 1,
-        question: "Send dick pick to partner?",
-        answer: answer,
-      });
-      const stringifiedJson = JSON.stringify(db);
-
-      try {
-        await writeData(stringifiedJson);
-        res.status(204).end();
-      } catch (error) {
-        console.log(error);
-        errorLogging(error, __filename);
-        res.status(500).end();
-      }
+      await addGameStatistic(answerId);
+      res.status(204).end();
     } catch (error) {
       console.log(error);
       errorLogging(error, __filename);

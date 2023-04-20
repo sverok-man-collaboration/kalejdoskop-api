@@ -12,6 +12,6 @@ const router = Router();
 router.get("/", allStatistics);
 
 // Post statistics to question 1 route
-router.post("/1", postStatistics);
+router.post("/", postStatistics);
 
 export default router;

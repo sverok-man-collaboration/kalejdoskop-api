@@ -56,7 +56,6 @@ const postUser = async (req: Request, res: Response) => {
 // Delete user method
 const deleteUser = async (req: Request, res: Response) => {
   const { id } = req.params;
-  console.log(id);
   if (id) {
     const idNumber = parseInt(id);
     try {

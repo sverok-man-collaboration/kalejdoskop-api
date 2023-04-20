@@ -2,16 +2,19 @@ import type { Request, Response } from "express";
 import errorLogging from "../middlewares/error-logging.mjs";
 
 // Model imports
-import { readData, writeData } from "../models/db.model.mjs";
+import {
+  getAllPosts,
+  getThreeRandomPosts,
+  addPost,
+  updatePost,
+  getPost,
+} from "../models/messages.model.mjs";
 
-// Type imports
-import type { Database } from "../types/controllers/database.js";
-
-// Get answer to question 1 method
-const getAnswers1 = async (_req: Request, res: Response) => {
+// Get all messages method
+const allMessages = async (_req: Request, res: Response) => {
   try {
-    const db = (await readData()) as Database;
-    res.status(200).json(db.posts.question1);
+    const data = await getAllPosts();
+    res.status(200).json(data);
   } catch (error) {
     console.log(error);
     errorLogging(error, __filename);
@@ -19,28 +22,14 @@ const getAnswers1 = async (_req: Request, res: Response) => {
   }
 };
 
-// Post answer to question 1 method
-const postAnswer1 = async (req: Request, res: Response) => {
-  const { message } = req.body;
-  const messageType = typeof message;
-
-  if (messageType === "string") {
+// Get message method
+const getMessage = async (req: Request, res: Response) => {
+  const { id } = req.params;
+  if (id) {
+    const idNumber = parseInt(id);
     try {
-      const db = (await readData()) as Database;
-      const maxValue = Math.max(
-        ...db.posts.question1.map((message) => message.id)
-      );
-      db.posts.question1.push({ id: maxValue + 1, message: message });
-      const stringifiedJson = JSON.stringify(db);
-
-      try {
-        await writeData(stringifiedJson);
-        res.status(204).end();
-      } catch (error) {
-        console.log(error);
-        errorLogging(error, __filename);
-        res.status(500).end();
-      }
+      const data = await getPost(idNumber);
+      res.status(200).json(data);
     } catch (error) {
       console.log(error);
       errorLogging(error, __filename);
@@ -51,38 +40,53 @@ const postAnswer1 = async (req: Request, res: Response) => {
   }
 };
 
-// Patch answer to question 1 method
-const patchAnswer1 = async (req: Request, res: Response) => {
-  const { id, message } = req.body;
+// Get three random messages method
+const threeRandomMessages = async (_req: Request, res: Response) => {
+  try {
+    const data = await getThreeRandomPosts();
+    res.status(200).json(data);
+  } catch (error) {
+    console.log(error);
+    errorLogging(error, __filename);
+    res.status(500).end();
+  }
+};
+
+// Post message method
+const postMessage = async (req: Request, res: Response) => {
+  const { room, object, message } = req.body;
+  const roomType = typeof room;
+  const objectType = typeof object;
+  const messageType = typeof message;
+
+  if (
+    messageType === "string" &&
+    roomType === "string" &&
+    objectType === "string"
+  ) {
+    try {
+      await addPost(room, object, message);
+      res.status(204).end();
+    } catch (error) {
+      console.log(error);
+      errorLogging(error, __filename);
+      res.status(500).end();
+    }
+  } else {
+    res.status(400).end();
+  }
+};
+
+// Patch message method
+const patchMessage = async (req: Request, res: Response) => {
+  const { id, status } = req.body;
   const idType = typeof id;
-  const messageType = typeof message;
+  const statusType = typeof status;
 
-  if (idType === "number" && messageType === "string") {
+  if (idType === "number" && statusType === "string") {
     try {
-      const db = (await readData()) as Database;
-      const messageFound = db.posts.question1.find(
-        (message) => message.id === id
-      );
-
-      if (messageFound) {
-        const messageIndex = db.posts.question1.findIndex((message) => {
-          return message.id === id;
-        });
-        db.posts.question1.push({ id: id, message: message });
-        db.posts.question1.splice(messageIndex, 1);
-        const stringifiedJson = JSON.stringify(db);
-
-        try {
-          await writeData(stringifiedJson);
-          res.status(204).end();
-        } catch (error) {
-          console.log(error);
-          errorLogging(error, __filename);
-          res.status(500).end();
-        }
-      } else {
-        res.status(409).end();
-      }
+      await updatePost(id, status);
+      res.status(204).end();
     } catch (error) {
       console.log(error);
       errorLogging(error, __filename);
@@ -93,7 +97,10 @@ const patchAnswer1 = async (req: Request, res: Response) => {
   }
 };
 
-// Delete answer to question 1 method
-const deleteAnswer1 = (_req: Request, _res: Response) => {};
-
-export { getAnswers1, postAnswer1, patchAnswer1, deleteAnswer1 };
+export {
+  allMessages,
+  getMessage,
+  threeRandomMessages,
+  postMessage,
+  patchMessage,
+};

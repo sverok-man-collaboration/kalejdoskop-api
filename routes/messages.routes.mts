@@ -2,24 +2,27 @@ import { Router } from "express";
 
 // Controller imports
 import {
-  getAnswers1,
-  postAnswer1,
-  patchAnswer1,
-  deleteAnswer1,
+  allMessages,
+  postMessage,
+  threeRandomMessages,
+  patchMessage,
 } from "../controllers/messages.controllers.mjs";
 
 const router = Router();
 
-// Get answers to question 1 route
-router.get("/1", getAnswers1);
+// Get all messages route
+router.get("/", allMessages);
 
-// Post answer to question 1 route
-router.post("/1", postAnswer1);
+// Get message route
+router.get("/:id");
+
+// Get three random messages route
+router.get("/three-random-messages", threeRandomMessages);
+
+// Post message route
+router.post("/", postMessage);
 
 // Patch answer to question 1 route
-router.patch("/1", patchAnswer1);
-
-// Delete answer to question 1 route
-router.delete("/1", deleteAnswer1);
+router.patch("/", patchMessage);
 
 export default router;

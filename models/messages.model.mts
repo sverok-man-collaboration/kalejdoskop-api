@@ -10,7 +10,7 @@ async function getAllPosts() {
   let posts: Post[] | [] = [];
   async function main() {
     posts =
-      await prisma.$queryRaw`SELECT * FROM "Post" ORDER BY FIELD(status, 'pending', 'approved', 'denied')`;
+      await prisma.$queryRaw`SELECT * FROM "Post" ORDER BY CASE WHEN status = 'pending' THEN 1 WHEN status = 'approved' THEN 2 WHEN status = 'denied' THEN 3 END`;
   }
 
   await main()

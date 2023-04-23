@@ -9,7 +9,15 @@ const prisma = new PrismaClient();
 async function getAllGameStatistics() {
   let gameStatistics: GameStatistic[] | [] = [];
   async function main() {
-    gameStatistics = await prisma.gameStatistic.findMany();
+    gameStatistics = await prisma.gameStatistic.findMany({
+      include: {
+        answer: {
+          include: {
+            question: true,
+          },
+        },
+      },
+    });
   }
 
   await main()

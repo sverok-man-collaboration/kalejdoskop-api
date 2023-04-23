@@ -44,7 +44,10 @@ const emailAuth = async (req: Request, res: Response) => {
               html: `<a href="http://localhost:4000/verify?token=${token}">Login</a>`,
             });
 
-            console.log("Message sent: %s", info.messageId);
+            console.log(
+              "Email authentication message sent: %s",
+              info.messageId
+            );
           }
           try {
             await main();
@@ -90,6 +93,7 @@ const emailAuth = async (req: Request, res: Response) => {
 const verifyUser = async (req: Request, res: Response) => {
   const token = req.query["token"]?.toString();
   const secret = process.env["SECRET_JWT"];
+  console.log("User verified");
 
   if (secret && token) {
     try {

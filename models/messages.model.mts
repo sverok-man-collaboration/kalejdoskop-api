@@ -30,7 +30,7 @@ async function getThreeRandomPosts() {
   let posts: Post[] | [] = [];
   async function main() {
     posts =
-      await prisma.$queryRaw`SELECT * FROM "Post" ORDER BY RANDOM() LIMIT 3`;
+      await prisma.$queryRaw`SELECT * FROM "Post" WHERE status = 'approved' ORDER BY RANDOM() LIMIT 3`;
   }
 
   await main()

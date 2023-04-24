@@ -14,10 +14,6 @@ dist-ssr
 *.local
 
 # Editor directories and files
-.env
-dev.db
-
-# Editor directories and files
 .vscode/*
 !.vscode/extensions.json
 .idea
@@ -27,3 +23,7 @@ dev.db
 *.njsproj
 *.sln
 *.sw?
+
+# Other
+.env
+dev.db

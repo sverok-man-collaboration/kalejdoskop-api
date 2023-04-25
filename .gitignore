@@ -27,3 +27,4 @@ dist-ssr
 # Other
 .env
 dev.db
+dev.db-journal

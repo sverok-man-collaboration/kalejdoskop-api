@@ -16,7 +16,7 @@ model User {
   name  String
 }
 
-model Post {
+model Message {
   id        Int      @id @default(autoincrement())
   timestamp DateTime @default(now())
   room      String

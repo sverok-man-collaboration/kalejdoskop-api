@@ -4,7 +4,7 @@ interface User {
   name: string;
 }
 
-interface Post {
+interface Message {
   id: number;
   timestamp: Date;
   room: string;
@@ -36,4 +36,4 @@ interface GameDownloaded {
   timestamp: Date;
 }
 
-export { User, Post, GameStatistic, Question, Answer, GameDownloaded };
+export { User, Message, GameStatistic, Question, Answer, GameDownloaded };

@@ -3,17 +3,17 @@ import errorLogging from "../middlewares/error-logging.mjs";
 
 // Model imports
 import {
-  getAllPosts,
-  getThreeRandomPosts,
-  addPost,
-  updatePost,
-  getPost,
+  getAllMessages,
+  getThreeRandomMessages,
+  addMessage,
+  updateMessage,
+  getMessage,
 } from "../models/messages.model.mjs";
 
 // Get all messages method
 const allMessages = async (_req: Request, res: Response) => {
   try {
-    const data = await getAllPosts();
+    const data = await getAllMessages();
     res.status(200).json(data);
   } catch (error) {
     console.log(error);
@@ -23,12 +23,12 @@ const allMessages = async (_req: Request, res: Response) => {
 };
 
 // Get message method
-const getMessage = async (req: Request, res: Response) => {
+const retrieveMessage = async (req: Request, res: Response) => {
   const { id } = req.params;
   if (id) {
     const idNumber = parseInt(id);
     try {
-      const data = await getPost(idNumber);
+      const data = await getMessage(idNumber);
       res.status(200).json(data);
     } catch (error) {
       console.log(error);
@@ -43,7 +43,7 @@ const getMessage = async (req: Request, res: Response) => {
 // Get three random messages method
 const threeRandomMessages = async (_req: Request, res: Response) => {
   try {
-    const data = await getThreeRandomPosts();
+    const data = await getThreeRandomMessages();
     res.status(200).json(data);
   } catch (error) {
     console.log(error);
@@ -65,7 +65,7 @@ const postMessage = async (req: Request, res: Response) => {
     objectType === "string"
   ) {
     try {
-      await addPost(room, object, message);
+      await addMessage(room, object, message);
       res.status(204).end();
     } catch (error) {
       console.log(error);
@@ -85,7 +85,7 @@ const patchMessage = async (req: Request, res: Response) => {
 
   if (idType === "number" && statusType === "string") {
     try {
-      await updatePost(id, status);
+      await updateMessage(id, status);
       res.status(204).end();
     } catch (error) {
       console.log(error);
@@ -99,7 +99,7 @@ const patchMessage = async (req: Request, res: Response) => {
 
 export {
   allMessages,
-  getMessage,
+  retrieveMessage,
   threeRandomMessages,
   postMessage,
   patchMessage,

@@ -3,7 +3,7 @@ import { Router } from "express";
 // Controller imports
 import {
   allMessages,
-  getMessage,
+  retrieveMessage,
   postMessage,
   threeRandomMessages,
   patchMessage,
@@ -18,7 +18,7 @@ router.get("/", allMessages);
 router.get("/three-random-messages", threeRandomMessages);
 
 // Get message route
-router.get("/:id", getMessage);
+router.get("/:id", retrieveMessage);
 
 // Post message route
 router.post("/", postMessage);

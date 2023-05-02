@@ -106,7 +106,7 @@ const verifyUser = async (req: Request, res: Response) => {
         const data = await verifyUserId(decodedToken["userId"]);
         const user = data[0];
         if (user) {
-          res.redirect("http://localhost:5173");
+          res.redirect(`http://localhost:5173?token=${encodeURIComponent(token)}`);
         } else {
           res.status(404).end();
         }

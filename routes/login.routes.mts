@@ -6,7 +6,7 @@ import { emailAuth, verifyUser } from "../controllers/login.controllers.mjs";
 const router = Router();
 
 // Login with email route
-router.post("/", emailAuth);
+router.post("/auth", emailAuth);
 
 // Verify user route
 router.get("/verify", verifyUser);

@@ -59,7 +59,7 @@ const corsOptions = {
 };
 
 // Routes
-app.use("/", cors(corsOptions), loginRoutes);
+app.use("/login", cors(corsOptions), loginRoutes);
 app.use("/users", cors(corsOptions), usersRoutes);
 app.use("/messages", cors(corsOptions), messagesRoutes);
 app.use("/statistics", cors(corsOptions), statisticsRoutes);

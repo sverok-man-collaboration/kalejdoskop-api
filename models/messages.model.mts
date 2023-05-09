@@ -26,11 +26,11 @@ async function getAllMessages() {
   return messages;
 }
 
-async function getThreeRandomMessages() {
+async function getThreeRandomMessages(room: string, object: string) {
   let messages: Message[] | [] = [];
   async function main() {
     messages =
-      await prisma.$queryRaw`SELECT * FROM "Message" WHERE status = 'approved' ORDER BY RANDOM() LIMIT 3`;
+      await prisma.$queryRaw`SELECT * FROM "Message" WHERE status = 'approved' AND room = ${room} AND object = ${object} ORDER BY RANDOM() LIMIT 3`;
   }
 
   await main()

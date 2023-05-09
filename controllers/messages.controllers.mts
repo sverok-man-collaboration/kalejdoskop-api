@@ -41,14 +41,19 @@ const retrieveMessage = async (req: Request, res: Response) => {
 };
 
 // Get three random messages method
-const threeRandomMessages = async (_req: Request, res: Response) => {
-  try {
-    const data = await getThreeRandomMessages();
-    res.status(200).json(data);
-  } catch (error) {
-    console.log(error);
-    errorLogging(error, __filename);
-    res.status(500).end();
+const threeRandomMessages = async (req: Request, res: Response) => {
+  const { room, object } = req.params;
+  if (room && object) {
+    const roomToString: string = room.toString();
+    const objectToString: string = object.toString();
+    try {
+      const data = await getThreeRandomMessages(roomToString, objectToString);
+      res.status(200).json(data);
+    } catch (error) {
+      console.log(error);
+      errorLogging(error, __filename);
+      res.status(500).end();
+    }
   }
 };
 

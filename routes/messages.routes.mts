@@ -15,7 +15,7 @@ const router = Router();
 router.get("/", allMessages);
 
 // Get three random messages route
-router.get("/three-random-messages", threeRandomMessages);
+router.get("/three-random/:room/:object", threeRandomMessages);
 
 // Get message route
 router.get("/:id", retrieveMessage);

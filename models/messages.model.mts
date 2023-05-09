@@ -26,11 +26,11 @@ async function getAllMessages() {
   return messages;
 }
 
-async function getThreeRandomMessages() {
+async function getThreeRandomMessages(room: string, object: string) {
   let messages: Message[] | [] = [];
   async function main() {
     messages =
-      await prisma.$queryRaw`SELECT * FROM "Message" WHERE status = 'approved' ORDER BY RANDOM() LIMIT 3`;
+      await prisma.$queryRaw`SELECT * FROM "Message" WHERE status = 'approved' AND room = ${room} AND object = ${object} ORDER BY RANDOM() LIMIT 3`;
   }
 
   await main()
@@ -93,7 +93,32 @@ async function getMessage(id: number) {
   return message;
 }
 
-async function updateMessage(id: number, status: string) {
+async function updateMessage(id: number, status: string, message: string) {
+  async function main() {
+    await prisma.message.update({
+      where: {
+        id: id,
+      },
+      data: {
+        status: status,
+        message: message,
+      },
+    });
+  }
+
+  await main()
+    .then(async () => {
+      await prisma.$disconnect();
+    })
+    .catch(async (error) => {
+      console.error(error);
+      errorLogging(error, __filename);
+      await prisma.$disconnect();
+      process.exit(1);
+    });
+}
+
+async function updateStatus(id: number, status: string) {
   async function main() {
     await prisma.message.update({
       where: {
@@ -123,4 +148,5 @@ export {
   addMessage,
   getMessage,
   updateMessage,
+  updateStatus,
 };

@@ -7,6 +7,7 @@ import {
   getThreeRandomMessages,
   addMessage,
   updateMessage,
+  updateStatus,
   getMessage,
 } from "../models/messages.model.mjs";
 
@@ -41,14 +42,19 @@ const retrieveMessage = async (req: Request, res: Response) => {
 };
 
 // Get three random messages method
-const threeRandomMessages = async (_req: Request, res: Response) => {
-  try {
-    const data = await getThreeRandomMessages();
-    res.status(200).json(data);
-  } catch (error) {
-    console.log(error);
-    errorLogging(error, __filename);
-    res.status(500).end();
+const threeRandomMessages = async (req: Request, res: Response) => {
+  const { room, object } = req.params;
+  if (room && object) {
+    const roomToString: string = room.toString();
+    const objectToString: string = object.toString();
+    try {
+      const data = await getThreeRandomMessages(roomToString, objectToString);
+      res.status(200).json(data);
+    } catch (error) {
+      console.log(error);
+      errorLogging(error, __filename);
+      res.status(500).end();
+    }
   }
 };
 
@@ -79,13 +85,33 @@ const postMessage = async (req: Request, res: Response) => {
 
 // Patch message method
 const patchMessage = async (req: Request, res: Response) => {
-  const { id, status } = req.body;
+  const { id, status, message } = req.body;
   const idType = typeof id;
   const statusType = typeof status;
-
-  if (idType === "number" && statusType === "string") {
+  const messageType = typeof message;
+  
+  if (
+    idType === "number" &&
+    statusType === "string" &&
+    messageType === "string" &&
+    message !== ""
+  ) {
     try {
-      await updateMessage(id, status);
+      await updateMessage(id, status, message);
+      res.status(204).end();
+    } catch (error) {
+      console.log(error);
+      errorLogging(error, __filename);
+      res.status(500).end();
+    }
+  } else if (
+    idType === "number" &&
+    statusType === "string" &&
+    messageType === "string" &&
+    message === ""
+  ) {
+    try {
+      await updateStatus(id, status);
       res.status(204).end();
     } catch (error) {
       console.log(error);

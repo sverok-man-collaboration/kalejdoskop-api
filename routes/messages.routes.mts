@@ -1,5 +1,8 @@
 import { Router } from "express";
 
+// Middlewares imports
+import { verifyToken } from "../middlewares/authenticate-token.mjs";
+
 // Controller imports
 import {
   allMessages,
@@ -12,18 +15,18 @@ import {
 const router = Router();
 
 // Get all messages route
-router.get("/", allMessages);
+router.get("/", verifyToken, allMessages);
 
 // Get three random messages route
 router.get("/three-random/:room/:object", threeRandomMessages);
 
 // Get message route
-router.get("/:id", retrieveMessage);
+router.get("/:id", verifyToken, retrieveMessage);
 
 // Post message route
 router.post("/", postMessage);
 
 // Patch answer to question 1 route
-router.patch("/", patchMessage);
+router.patch("/", verifyToken, patchMessage);
 
 export default router;

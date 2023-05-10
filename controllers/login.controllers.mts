@@ -24,7 +24,7 @@ const emailAuth = async (req: Request, res: Response) => {
 
         if (secret) {
           const token = sign({ userId: user.id }, secret, {
-            expiresIn: "1h",
+            expiresIn: "8h",
           });
 
           async function main() {
@@ -41,7 +41,7 @@ const emailAuth = async (req: Request, res: Response) => {
             let info = await transporter.sendMail({
               to: `${email}`,
               subject: "Finish logging in",
-              html: `<a href="http://localhost:4000/verify?token=${token}">Login</a>`,
+              html: `<a href="http://localhost:4000/login/verify?token=${token}">Login</a>`,
             });
 
             console.log(

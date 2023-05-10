@@ -1,4 +1,7 @@
 import express from "express";
+
+// Middlewares imports
+import { verifyToken } from "./middlewares/authenticate-token.mjs";
 import cors from "cors";
 import {
   contentSecurityPolicy,
@@ -60,7 +63,7 @@ const corsOptions = {
 
 // Routes
 app.use("/login", cors(corsOptions), loginRoutes);
-app.use("/users", cors(corsOptions), usersRoutes);
+app.use("/users", cors(corsOptions), verifyToken, usersRoutes);
 app.use("/messages", cors(corsOptions), messagesRoutes);
 app.use("/statistics", cors(corsOptions), statisticsRoutes);
 

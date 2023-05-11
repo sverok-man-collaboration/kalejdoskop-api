@@ -40,8 +40,8 @@ const emailAuth = async (req: Request, res: Response) => {
 
             let info = await transporter.sendMail({
               to: `${email}`,
-              subject: "Finish logging in",
-              html: `<a href="http://localhost:4000/login/verify?token=${token}">Login</a>`,
+              subject: "Slutför inloggningen",
+              html: `<a href="http://localhost:4000/login/verify?token=${token}">Logga in länk</a>`,
             });
 
             console.log(
@@ -51,7 +51,7 @@ const emailAuth = async (req: Request, res: Response) => {
           }
           try {
             await main();
-            res.send("Check your email to finish logging in");
+            res.send("Kontrollera din e-post för att slutföra inloggningen.");
           } catch (error) {
             if (typeof error === "object" && error && "responseCode" in error) {
               if (error.responseCode === 535) {
@@ -77,10 +77,10 @@ const emailAuth = async (req: Request, res: Response) => {
           res.status(500).end();
         }
       } else {
-        res.send("Check your email to finish logging in");
+        res.send("Kontrollera din e-post för att slutföra inloggningen.");
       }
     } else {
-      res.send("Check your email to finish logging in");
+      res.send("Kontrollera din e-post för att slutföra inloggningen.");
     }
   } catch (error) {
     console.log(error);
@@ -106,7 +106,9 @@ const verifyUser = async (req: Request, res: Response) => {
         const data = await verifyUserId(decodedToken["userId"]);
         const user = data[0];
         if (user) {
-          res.redirect(`http://localhost:5173?token=${encodeURIComponent(token)}`);
+          res.redirect(
+            `http://localhost:5173?token=${encodeURIComponent(token)}`
+          );
         } else {
           res.status(404).end();
         }

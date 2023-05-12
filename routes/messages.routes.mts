@@ -26,7 +26,7 @@ router.get("/:id", verifyToken, retrieveMessage);
 // Post message route
 router.post("/", postMessage);
 
-// Patch answer to question 1 route
+// Patch message route
 router.patch("/", verifyToken, patchMessage);
 
 export default router;

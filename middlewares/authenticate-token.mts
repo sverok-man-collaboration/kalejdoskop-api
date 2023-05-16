@@ -18,6 +18,7 @@ const verifyToken = async (req: Request, res: Response, next: NextFunction) => {
       const decodedToken = verify(token, secret);
 
       if (typeof decodedToken === "string" || !decodedToken["userId"]) {
+        res.status(401).end();
         throw new Error("Invalid token");
       }
       try {

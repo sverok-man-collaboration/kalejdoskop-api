@@ -1,6 +1,3 @@
-import type { Request, Response } from "express";
-import errorLogging from "../middlewares/error-logging.mjs";
-
 // Model imports
 import {
   getAllMessages,
@@ -11,11 +8,28 @@ import {
   getMessage,
 } from "../models/messages.model.mjs";
 
+// Middleware imports
+import newTokenResponse from "../middlewares/new-token.mjs";
+import errorLogging from "../middlewares/error-logging.mjs";
+
+// Type imports
+import type { Request, Response } from "express";
+
 // Get all messages method
-const allMessages = async (_req: Request, res: Response) => {
+const allMessages = async (req: Request, res: Response) => {
+  const authHeader = req.headers["authorization"]?.toString();
+
+  // Token has already been verified by authenticate-token middleware
+  const token = authHeader?.split(" ")[1] as string;
+  const newToken = newTokenResponse(token, res);
+
+  if (!newToken) {
+    return;
+  }
+
   try {
-    const data = await getAllMessages();
-    res.status(200).json(data);
+    const messages = await getAllMessages();
+    res.status(200).json({ newToken, messages });
   } catch (error) {
     console.log(error);
     errorLogging(error, __filename);
@@ -26,11 +40,21 @@ const allMessages = async (_req: Request, res: Response) => {
 // Get message method
 const retrieveMessage = async (req: Request, res: Response) => {
   const { id } = req.params;
+  const authHeader = req.headers["authorization"]?.toString();
+
+  // Token has already been verified by authenticate-token middleware
+  const token = authHeader?.split(" ")[1] as string;
+  const newToken = newTokenResponse(token, res);
+
+  if (!newToken) {
+    return;
+  }
+
   if (id) {
     const idNumber = parseInt(id);
     try {
-      const data = await getMessage(idNumber);
-      res.status(200).json(data);
+      const messages = await getMessage(idNumber);
+      res.status(200).json({ newToken, messages });
     } catch (error) {
       console.log(error);
       errorLogging(error, __filename);
@@ -45,16 +69,16 @@ const retrieveMessage = async (req: Request, res: Response) => {
 const threeRandomMessages = async (req: Request, res: Response) => {
   const { room, object } = req.params;
   if (room && object) {
-    const roomToString: string = room.toString();
-    const objectToString: string = object.toString();
     try {
-      const data = await getThreeRandomMessages(roomToString, objectToString);
+      const data = await getThreeRandomMessages(room, object);
       res.status(200).json(data);
     } catch (error) {
       console.log(error);
       errorLogging(error, __filename);
       res.status(500).end();
     }
+  } else {
+    res.status(400).end();
   }
 };
 
@@ -66,9 +90,9 @@ const postMessage = async (req: Request, res: Response) => {
   const messageType = typeof message;
 
   if (
-    messageType === "string" &&
     roomType === "string" &&
-    objectType === "string"
+    objectType === "string" &&
+    messageType === "string"
   ) {
     try {
       await addMessage(room, object, message);
@@ -86,37 +110,43 @@ const postMessage = async (req: Request, res: Response) => {
 // Patch message method
 const patchMessage = async (req: Request, res: Response) => {
   const { id, status, message } = req.body;
+  const authHeader = req.headers["authorization"]?.toString();
+
+  // Token has already been verified by authenticate-token middleware
+  const token = authHeader?.split(" ")[1] as string;
+  const newToken = newTokenResponse(token, res);
+
+  if (!newToken) {
+    return;
+  }
+
   const idType = typeof id;
   const statusType = typeof status;
   const messageType = typeof message;
-  
+
   if (
     idType === "number" &&
     statusType === "string" &&
-    messageType === "string" &&
-    message !== ""
+    messageType === "string"
   ) {
-    try {
-      await updateMessage(id, status, message);
-      res.status(204).end();
-    } catch (error) {
-      console.log(error);
-      errorLogging(error, __filename);
-      res.status(500).end();
-    }
-  } else if (
-    idType === "number" &&
-    statusType === "string" &&
-    messageType === "string" &&
-    message === ""
-  ) {
-    try {
-      await updateStatus(id, status);
-      res.status(204).end();
-    } catch (error) {
-      console.log(error);
-      errorLogging(error, __filename);
-      res.status(500).end();
+    if (message === "") {
+      try {
+        await updateStatus(id, status);
+        res.status(204).end();
+      } catch (error) {
+        console.log(error);
+        errorLogging(error, __filename);
+        res.status(500).end();
+      }
+    } else {
+      try {
+        await updateMessage(id, status, message);
+        res.status(204).json({ newToken });
+      } catch (error) {
+        console.log(error);
+        errorLogging(error, __filename);
+        res.status(500).end();
+      }
     }
   } else {
     res.status(400).end();

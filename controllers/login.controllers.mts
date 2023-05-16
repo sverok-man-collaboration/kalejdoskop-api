@@ -24,7 +24,7 @@ const emailAuth = async (req: Request, res: Response) => {
 
         if (secret) {
           const token = sign({ userId: user.id }, secret, {
-            expiresIn: "8h",
+            expiresIn: "1h",
           });
 
           async function main() {

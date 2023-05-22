@@ -1,6 +1,3 @@
-import type { Request, Response } from "express";
-import errorLogging from "../middlewares/error-logging.mjs";
-
 // Model imports
 import {
   getAllUsers,
@@ -9,11 +6,28 @@ import {
   removeUser,
 } from "../models/users.model.mjs";
 
+// Middleware imports
+import newTokenResponse from "../middlewares/new-token.mjs";
+import errorLogging from "../middlewares/error-logging.mjs";
+
+// Type imports
+import type { Request, Response } from "express";
+
 // Get all users method
-const allUsers = async (_req: Request, res: Response) => {
+const allUsers = async (req: Request, res: Response) => {
+  const authHeader = req.headers["authorization"]?.toString();
+
+  // Token has already been verified by authenticate-token middleware
+  const token = authHeader?.split(" ")[1] as string;
+  const newToken = newTokenResponse(token, res);
+
+  if (!newToken) {
+    return;
+  }
+
   try {
-    const data = await getAllUsers();
-    res.status(200).json(data);
+    const users = await getAllUsers();
+    res.status(200).json({ newToken, users });
   } catch (error) {
     console.log(error);
     errorLogging(error, __filename);
@@ -24,6 +38,16 @@ const allUsers = async (_req: Request, res: Response) => {
 // Post user method
 const postUser = async (req: Request, res: Response) => {
   const { email, name } = req.body;
+  const authHeader = req.headers["authorization"]?.toString();
+
+  // Token has already been verified by authenticate-token middleware
+  const token = authHeader?.split(" ")[1] as string;
+  const newToken = newTokenResponse(token, res);
+
+  if (!newToken) {
+    return;
+  }
+
   const emailType = typeof email;
   const nameType = typeof name;
 
@@ -34,7 +58,7 @@ const postUser = async (req: Request, res: Response) => {
       if (data.length < 1) {
         try {
           await addUser(emailLowercase, name);
-          res.status(204).end();
+          res.status(204).json({ newToken });
         } catch (error) {
           console.log(error);
           errorLogging(error, __filename);
@@ -56,12 +80,21 @@ const postUser = async (req: Request, res: Response) => {
 // Delete user method
 const deleteUser = async (req: Request, res: Response) => {
   const { id } = req.params;
+  const authHeader = req.headers["authorization"]?.toString();
+
+  // Token has already been verified by authenticate-token middleware
+  const token = authHeader?.split(" ")[1] as string;
+  const newToken = newTokenResponse(token, res);
+
+  if (!newToken) {
+    return;
+  }
+
   if (id) {
     const idNumber = parseInt(id);
     try {
-      const data = await removeUser(idNumber);
-      console.log(data);
-      res.status(204).end();
+      await removeUser(idNumber);
+      res.status(204).json({ newToken });
     } catch (error) {
       console.log(error);
       errorLogging(error, __filename);

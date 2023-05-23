@@ -29,9 +29,9 @@ import usersRoutes from "./routes/users.routes.mjs";
 import messagesRoutes from "./routes/messages.routes.mjs";
 import statisticsRoutes from "./routes/statistics.routes.mjs";
 
-// Random SHA-256 key
-import { SHAKey } from "./utils/create-key.util.mjs";
-SHAKey();
+// Random JWT key
+import generateKey from "./utils/create-key.util.mjs";
+generateKey();
 
 const app = express();
 const PORT = 4000;

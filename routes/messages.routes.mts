@@ -5,28 +5,24 @@ import { verifyToken } from "../middlewares/authenticate-token.mjs";
 
 // Controller imports
 import {
-  allMessages,
-  retrieveMessage,
-  postMessage,
-  threeRandomMessages,
-  patchMessage,
+  getAllMessagesController,
+  postMessageController,
+  getThreeRandomMessagesController,
+  patchMessageController,
 } from "../controllers/messages.controllers.mjs";
 
 const router = Router();
 
 // Get all messages route
-router.get("/", verifyToken, allMessages);
+router.get("/", verifyToken, getAllMessagesController);
 
 // Get three random messages route
-router.get("/three-random/:room/:object", threeRandomMessages);
-
-// Get message route
-router.get("/:id", verifyToken, retrieveMessage);
+router.get("/three-random/:room/:object", getThreeRandomMessagesController);
 
 // Post message route
-router.post("/", postMessage);
+router.post("/", postMessageController);
 
 // Patch message route
-router.patch("/", verifyToken, patchMessage);
+router.patch("/", verifyToken, patchMessageController);
 
 export default router;

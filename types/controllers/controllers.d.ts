@@ -2,6 +2,7 @@ interface User {
   id: number;
   email: string;
   name: string;
+  iv?: string;
 }
 
 interface Message {
@@ -11,6 +12,7 @@ interface Message {
   object: string;
   message: string;
   status: string;
+  iv?: string;
 }
 
 interface GameStatistic {

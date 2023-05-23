@@ -1,108 +1,158 @@
 // Model imports
 import {
   getAllUsers,
-  addUser,
+  postUser,
+  deleteUser,
   verifyUserEmail,
-  removeUser,
 } from "../models/users.model.mjs";
 
 // Middleware imports
-import newTokenResponse from "../middlewares/new-token.mjs";
+import getNewToken from "../middlewares/new-token.mjs";
+import encryptData from "../middlewares/encrypt-data.mjs";
+import decryptData from "../middlewares/decrypt-data.mjs";
 import errorLogging from "../middlewares/error-logging.mjs";
 
 // Type imports
 import type { Request, Response } from "express";
 
 // Get all users method
-const allUsers = async (req: Request, res: Response) => {
-  const authHeader = req.headers["authorization"]?.toString();
-
+const getAllUsersController = async (req: Request, res: Response) => {
   // Token has already been verified by authenticate-token middleware
+  const authHeader = req.headers["authorization"]?.toString();
   const token = authHeader?.split(" ")[1] as string;
-  const newToken = newTokenResponse(token, res);
 
-  if (!newToken) {
-    return;
+  // Get new Token
+  const newToken = getNewToken(token);
+  if (newToken === "Invalid token") {
+    console.log("Invalid token");
+    return res.status(401).end();
+  } else if (newToken === "SECRET_JWT is undefined") {
+    const errorMessage = "process.env.SECRET_JWT is undefined";
+    console.log(errorMessage);
+    errorLogging(errorMessage, __filename);
+    return res.status(500).end();
   }
 
   try {
     const users = await getAllUsers();
-    res.status(200).json({ newToken, users });
+
+    // Decrypting email and name
+    for (const user of users) {
+      try {
+        if (user.iv) {
+          const decryptedName = decryptData(user.name, user.iv);
+          const decryptedEmail = decryptData(user.email, user.iv);
+
+          if (decryptedName && decryptedEmail) {
+            user.name = decryptedName;
+            user.email = decryptedEmail;
+            delete user.iv;
+          } else {
+            throw new Error("process.env.SECRET_JWT is undefined");
+          }
+        } else {
+          throw new Error("Iv is undefined for user" + user.id);
+        }
+      } catch (error) {
+        console.log(error);
+        errorLogging(error, __filename);
+      }
+    }
+    return res.status(200).json({ newToken, users });
   } catch (error) {
     console.log(error);
     errorLogging(error, __filename);
-    res.status(500).end();
+    return res.status(500).end();
   }
 };
 
 // Post user method
-const postUser = async (req: Request, res: Response) => {
+const postUserController = async (req: Request, res: Response) => {
   const { email, name } = req.body;
-  const authHeader = req.headers["authorization"]?.toString();
-
-  // Token has already been verified by authenticate-token middleware
-  const token = authHeader?.split(" ")[1] as string;
-  const newToken = newTokenResponse(token, res);
-
-  if (!newToken) {
-    return;
-  }
-
   const emailType = typeof email;
   const nameType = typeof name;
 
-  if (emailType === "string" && nameType === "string") {
-    try {
-      const emailLowercase: string = email.toLowerCase();
-      const data = await verifyUserEmail(emailLowercase);
-      if (data.length < 1) {
-        try {
-          await addUser(emailLowercase, name);
-          res.status(204).json({ newToken });
-        } catch (error) {
-          console.log(error);
-          errorLogging(error, __filename);
-          res.status(500).end();
-        }
-      } else {
-        res.status(409).end();
-      }
-    } catch (error) {
-      console.log(error);
-      errorLogging(error, __filename);
-      res.status(500).end();
-    }
-  } else {
-    res.status(400).end();
+  if (emailType !== "string" || nameType !== "string") {
+    return res.status(400).end();
+  }
+
+  // Token has already been verified by authenticate-token middleware
+  const authHeader = req.headers["authorization"]?.toString();
+  const token = authHeader?.split(" ")[1] as string;
+
+  // Get new Token
+  const newToken = getNewToken(token);
+  if (newToken === "Invalid token") {
+    console.log("Invalid token");
+    return res.status(401).end();
+  } else if (newToken === "SECRET_JWT is undefined") {
+    const errorMessage = "process.env.SECRET_JWT is undefined";
+    console.log(errorMessage);
+    errorLogging(errorMessage, __filename);
+    return res.status(500).end();
+  }
+
+  // Encrypting email and name
+  const emailLowerCase = email.toLowerCase();
+  const { data, moreData, iv } = encryptData(emailLowerCase, name) || {};
+
+  if (!data || !moreData) {
+    const errorMessage = "process.env.SECRET_JWT is undefined";
+    console.log(errorMessage);
+    errorLogging(errorMessage, __filename);
+    return res.status(500).end();
+  } else if (!iv) {
+    const errorMessage = "iv is undefined";
+    console.log(errorMessage);
+    errorLogging(errorMessage, __filename);
+    return res.status(500).end();
+  }
+
+  // Check if user already exists
+  const existingUsers = await verifyUserEmail(data);
+  if (existingUsers.length > 0) {
+    return res.status(409).end();
+  }
+
+  try {
+    await postUser(data, moreData, iv);
+    return res.status(204).json({ newToken });
+  } catch (error) {
+    console.log(error);
+    errorLogging(error, __filename);
+    return res.status(500).end();
   }
 };
 
 // Delete user method
-const deleteUser = async (req: Request, res: Response) => {
-  const { id } = req.params;
-  const authHeader = req.headers["authorization"]?.toString();
-
-  // Token has already been verified by authenticate-token middleware
-  const token = authHeader?.split(" ")[1] as string;
-  const newToken = newTokenResponse(token, res);
-
-  if (!newToken) {
-    return;
+const deleteUserController = async (req: Request, res: Response) => {
+  const userId = req.params["id"];
+  if (!userId) {
+    return res.status(400).end();
   }
 
-  if (id) {
-    const idNumber = parseInt(id);
-    try {
-      await removeUser(idNumber);
-      res.status(204).json({ newToken });
-    } catch (error) {
-      console.log(error);
-      errorLogging(error, __filename);
-      res.status(500).end();
-    }
-  } else {
-    res.status(400).end();
+  // Token has already been verified by authenticate-token middleware
+  const authHeader = req.headers["authorization"];
+  const token = authHeader?.split(" ")[1] as string;
+
+  // Get new Token
+  const newToken = getNewToken(token);
+  if (newToken === "Invalid token") {
+    return res.status(401).end();
+  } else if (newToken === "SECRET_JWT is undefined") {
+    const errorMessage = "process.env.SECRET_JWT is undefined";
+    errorLogging(errorMessage, __filename);
+    return res.status(500).end();
+  }
+
+  const idNumber = parseInt(userId);
+  try {
+    await deleteUser(idNumber);
+    return res.status(204).json({ newToken });
+  } catch (error) {
+    errorLogging(error, __filename);
+    return res.status(500).end();
   }
 };
 
-export { allUsers, postUser, deleteUser };
+export { getAllUsersController, postUserController, deleteUserController };

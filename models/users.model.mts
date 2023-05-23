@@ -25,12 +25,13 @@ async function getAllUsers() {
   return users;
 }
 
-async function addUser(email: string, name: string) {
+async function postUser(email: string, name: string, iv: string) {
   async function main() {
     await prisma.user.create({
       data: {
         email: email,
         name: name,
+        iv: iv,
       },
     });
   }
@@ -95,7 +96,7 @@ async function verifyUserId(id: number) {
   return user;
 }
 
-async function removeUser(id: number) {
+async function deleteUser(id: number) {
   async function main() {
     const result = await prisma.user.delete({
       where: { id: id },
@@ -115,4 +116,4 @@ async function removeUser(id: number) {
     });
 }
 
-export { getAllUsers, addUser, verifyUserEmail, verifyUserId, removeUser };
+export { getAllUsers, postUser, verifyUserEmail, verifyUserId, deleteUser };

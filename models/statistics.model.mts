@@ -33,7 +33,7 @@ async function getAllGameStatistics() {
   return gameStatistics;
 }
 
-async function addGameStatistic(answerId: number) {
+async function postGameStatistic(answerId: number) {
   async function main() {
     await prisma.gameStatistic.create({
       data: {
@@ -54,4 +54,4 @@ async function addGameStatistic(answerId: number) {
     });
 }
 
-export { getAllGameStatistics, addGameStatistic };
+export { getAllGameStatistics, postGameStatistic };

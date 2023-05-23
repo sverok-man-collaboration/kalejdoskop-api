@@ -13,39 +13,37 @@ const verifyToken = async (req: Request, res: Response, next: NextFunction) => {
   const token = authHeader?.split(" ")[1];
   const secret = process.env["SECRET_JWT"];
 
-  if (secret && token) {
-    try {
-      const decodedToken = verify(token, secret);
-
-      if (typeof decodedToken === "string" || !decodedToken["userId"]) {
-        res.status(401).end();
-        throw new Error("Invalid token");
-      }
-      try {
-        const data = await verifyUserId(decodedToken["userId"]);
-        const user = data[0];
-        if (user) {
-          next();
-        } else {
-          res.status(404).end();
-        }
-      } catch (error) {
-        console.log(error);
-        errorLogging(error, __filename);
-        res.status(500).end();
-      }
-    } catch (error) {
-      console.log("Invalid token");
-      res.status(401).end();
-    }
-  } else if (authHeader === undefined) {
-    console.log("Not a token");
-    res.status(400).end();
-  } else {
+  if (!token) {
+    const errorMessage = "Invalid token";
+    console.log(errorMessage);
+    errorLogging(errorMessage, __filename);
+    return res.status(400).end();
+  } else if (!secret) {
     const errorMessage = "process.env.SECRET_JWT is undefined";
     console.log(errorMessage);
     errorLogging(errorMessage, __filename);
-    res.status(500).end();
+    return res.status(400).end();
+  }
+
+  try {
+    const decodedToken = verify(token, secret);
+
+    if (typeof decodedToken === "string" || !decodedToken["userId"]) {
+      throw new Error("Invalid token");
+    }
+
+    const data = await verifyUserId(decodedToken["userId"]);
+    const user = data[0];
+
+    if (!user) {
+      return res.status(404).end();
+    }
+
+    return next();
+  } catch (error) {
+    console.log(error);
+    errorLogging(error, __filename);
+    return res.status(401).end();
   }
 };
 

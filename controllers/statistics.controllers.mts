@@ -1,4 +1,4 @@
-import type { Request, Response } from "express";
+// Middleware imports
 import errorLogging from "../middlewares/error-logging.mjs";
 import { fileURLToPath } from "url";
 const __filename = fileURLToPath(import.meta.url);
@@ -8,6 +8,9 @@ import {
   getAllGameStatistics,
   postGameStatistic,
 } from "../models/statistics.model.mjs";
+
+// Type imports
+import type { Request, Response } from "express";
 
 // Get all statistics method
 const getAllStatisticsController = async (_req: Request, res: Response) => {

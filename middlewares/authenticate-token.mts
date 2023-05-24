@@ -1,14 +1,17 @@
-import type { Request, Response, NextFunction } from "express";
-import * as dotenv from "dotenv";
-dotenv.config();
+// JWT import
 import pkg from "jsonwebtoken";
 const { verify } = pkg;
+
+// Model imports
+import { verifyUserId } from "../models/users.model.mjs";
+
+// Middleware imports
 import errorLogging from "../middlewares/error-logging.mjs";
 import { fileURLToPath } from "url";
 const __filename = fileURLToPath(import.meta.url);
 
-// Model imports
-import { verifyUserId } from "../models/users.model.mjs";
+// Type imports
+import type { Request, Response, NextFunction } from "express";
 
 const verifyToken = async (req: Request, res: Response, next: NextFunction) => {
   const authHeader = req.headers["authorization"]?.toString();

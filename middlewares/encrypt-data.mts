@@ -1,6 +1,4 @@
 import crypto from "crypto";
-import * as dotenv from "dotenv";
-dotenv.config();
 
 // Encrypt data using AES-256-CBC algorithm, secret key and IV
 function encryptData(data: string, moreData?: string) {
@@ -9,8 +7,6 @@ function encryptData(data: string, moreData?: string) {
 
   const algorithm = "aes-256-cbc";
   const iv = crypto.randomBytes(16);
-
-  // Encrypt the main data
   const cipher = crypto.createCipheriv(
     algorithm,
     Buffer.from(secretKey, "hex"),

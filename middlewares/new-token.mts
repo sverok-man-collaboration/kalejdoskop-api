@@ -1,7 +1,6 @@
+// JWT import
 import pkg from "jsonwebtoken";
 const { sign, verify } = pkg;
-import * as dotenv from "dotenv";
-dotenv.config();
 
 function getNewToken(token: string): string {
   const secret = process.env["SECRET_KEY"];

@@ -1,4 +1,6 @@
 import { PrismaClient } from "@prisma/client";
+
+// Middleware imports
 import errorLogging from "../middlewares/error-logging.mjs";
 import { fileURLToPath } from "url";
 const __filename = fileURLToPath(import.meta.url);
@@ -50,7 +52,7 @@ async function postUser(email: string, name: string, iv: string) {
     });
 }
 
-async function verifyUserEmail(email: string) {
+async function getUser(email: string) {
   let user: User[] | [] = [];
   async function main() {
     const result = await prisma.user.findUnique({
@@ -118,4 +120,4 @@ async function deleteUser(id: number) {
     });
 }
 
-export { getAllUsers, postUser, verifyUserEmail, verifyUserId, deleteUser };
+export { getAllUsers, postUser, getUser, verifyUserId, deleteUser };

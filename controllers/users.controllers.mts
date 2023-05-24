@@ -3,7 +3,7 @@ import {
   getAllUsers,
   postUser,
   deleteUser,
-  verifyUserEmail,
+  getUser,
 } from "../models/users.model.mjs";
 
 // Middleware imports
@@ -111,7 +111,7 @@ const postUserController = async (req: Request, res: Response) => {
   }
 
   // Check if user already exists
-  const existingUsers = await verifyUserEmail(data);
+  const existingUsers = await getUser(data);
   if (existingUsers.length > 0) {
     return res.status(409).end();
   }

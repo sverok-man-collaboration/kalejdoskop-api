@@ -4,8 +4,8 @@ import * as dotenv from "dotenv";
 dotenv.config();
 
 function getNewToken(token: string): string {
-  const secret = process.env["SECRET_JWT"];
-  if (!secret) return "SECRET_JWT is undefined";
+  const secret = process.env["SECRET_KEY"];
+  if (!secret) return "SECRET_KEY is undefined";
 
   const decodedToken = verify(token, secret);
   if (typeof decodedToken === "string" || !decodedToken["userId"])

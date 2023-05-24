@@ -5,6 +5,8 @@ import { createTransport } from "nodemailer";
 import pkg from "jsonwebtoken";
 const { sign, verify } = pkg;
 import errorLogging from "../middlewares/error-logging.mjs";
+import { fileURLToPath } from "url";
+const __filename = fileURLToPath(import.meta.url);
 
 // Model imports
 import { verifyUserEmail, verifyUserId } from "../models/users.model.mjs";
@@ -20,7 +22,7 @@ const emailAuth = async (req: Request, res: Response) => {
       const user = data[0];
 
       if (user) {
-        const secret = process.env["SECRET_JWT"];
+        const secret = process.env["SECRET_KEY"];
 
         if (secret) {
           const token = sign({ userId: user.id }, secret, {
@@ -72,7 +74,7 @@ const emailAuth = async (req: Request, res: Response) => {
             }
           }
         } else {
-          const errorMessage = "process.env.SECRET_JWT is undefined";
+          const errorMessage = "process.env.SECRET_KEY is undefined";
           console.log(errorMessage);
           errorLogging(errorMessage, __filename);
           res.status(500).end();
@@ -93,7 +95,7 @@ const emailAuth = async (req: Request, res: Response) => {
 // Verify user token method
 const verifyUser = async (req: Request, res: Response) => {
   const token = req.query["token"]?.toString();
-  const secret = process.env["SECRET_JWT"];
+  const secret = process.env["SECRET_KEY"];
   console.log("User verified");
 
   if (secret && token) {
@@ -126,7 +128,7 @@ const verifyUser = async (req: Request, res: Response) => {
     console.log("Not a token");
     res.status(400).end();
   } else {
-    const errorMessage = "process.env.SECRET_JWT is undefined";
+    const errorMessage = "process.env.SECRET_KEY is undefined";
     console.log(errorMessage);
     errorLogging(errorMessage, __filename);
     res.status(500).end();

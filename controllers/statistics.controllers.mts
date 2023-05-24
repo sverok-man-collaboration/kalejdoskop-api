@@ -1,5 +1,7 @@
 import type { Request, Response } from "express";
 import errorLogging from "../middlewares/error-logging.mjs";
+import { fileURLToPath } from "url";
+const __filename = fileURLToPath(import.meta.url);
 
 // Model imports
 import {

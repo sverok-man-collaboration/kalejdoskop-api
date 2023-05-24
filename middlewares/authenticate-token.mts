@@ -4,6 +4,8 @@ dotenv.config();
 import pkg from "jsonwebtoken";
 const { verify } = pkg;
 import errorLogging from "../middlewares/error-logging.mjs";
+import { fileURLToPath } from "url";
+const __filename = fileURLToPath(import.meta.url);
 
 // Model imports
 import { verifyUserId } from "../models/users.model.mjs";
@@ -11,7 +13,7 @@ import { verifyUserId } from "../models/users.model.mjs";
 const verifyToken = async (req: Request, res: Response, next: NextFunction) => {
   const authHeader = req.headers["authorization"]?.toString();
   const token = authHeader?.split(" ")[1];
-  const secret = process.env["SECRET_JWT"];
+  const secret = process.env["SECRET_KEY"];
 
   if (!token) {
     const errorMessage = "Invalid token";
@@ -19,7 +21,7 @@ const verifyToken = async (req: Request, res: Response, next: NextFunction) => {
     errorLogging(errorMessage, __filename);
     return res.status(400).end();
   } else if (!secret) {
-    const errorMessage = "process.env.SECRET_JWT is undefined";
+    const errorMessage = "process.env.SECRET_KEY is undefined";
     console.log(errorMessage);
     errorLogging(errorMessage, __filename);
     return res.status(400).end();

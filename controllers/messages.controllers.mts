@@ -12,6 +12,8 @@ import getNewToken from "../middlewares/new-token.mjs";
 import encryptData from "../middlewares/encrypt-data.mjs";
 import decryptData from "../middlewares/decrypt-data.mjs";
 import errorLogging from "../middlewares/error-logging.mjs";
+import { fileURLToPath } from "url";
+const __filename = fileURLToPath(import.meta.url);
 
 // Type imports
 import type { Request, Response } from "express";
@@ -27,8 +29,8 @@ const getAllMessagesController = async (req: Request, res: Response) => {
   if (newToken === "Invalid token") {
     console.log("Invalid token");
     return res.status(401).end();
-  } else if (newToken === "SECRET_JWT is undefined") {
-    const errorMessage = "process.env.SECRET_JWT is undefined";
+  } else if (newToken === "SECRET_KEY is undefined") {
+    const errorMessage = "process.env.SECRET_KEY is undefined";
     console.log(errorMessage);
     errorLogging(errorMessage, __filename);
     return res.status(500).end();
@@ -47,7 +49,7 @@ const getAllMessagesController = async (req: Request, res: Response) => {
             message.message = decryptedMessage;
             delete message.iv;
           } else {
-            throw new Error("process.env.SECRET_JWT is undefined");
+            throw new Error("process.env.SECRET_KEY is undefined");
           }
         } else {
           throw new Error("Iv is undefined for message" + message.id);
@@ -88,7 +90,7 @@ const getThreeRandomMessagesController = async (
             message.message = decryptedMessage;
             delete message.iv;
           } else {
-            throw new Error("process.env.SECRET_JWT is undefined");
+            throw new Error("process.env.SECRET_KEY is undefined");
           }
         } else {
           throw new Error("Iv is undefined for message" + message.id);
@@ -125,7 +127,7 @@ const postMessageController = async (req: Request, res: Response) => {
   const { data, iv } = encryptData(message) || {};
 
   if (!data) {
-    const errorMessage = "process.env.SECRET_JWT is undefined";
+    const errorMessage = "process.env.SECRET_KEY is undefined";
     console.log(errorMessage);
     errorLogging(errorMessage, __filename);
     return res.status(500).end();
@@ -137,7 +139,7 @@ const postMessageController = async (req: Request, res: Response) => {
   }
 
   try {
-    await postMessage(room, object, message, iv);
+    await postMessage(room, object, data, iv);
     return res.status(204).end();
   } catch (error) {
     console.log(error);
@@ -170,8 +172,8 @@ const patchMessageController = async (req: Request, res: Response) => {
   if (newToken === "Invalid token") {
     console.log("Invalid token");
     return res.status(401).end();
-  } else if (newToken === "SECRET_JWT is undefined") {
-    const errorMessage = "process.env.SECRET_JWT is undefined";
+  } else if (newToken === "SECRET_KEY is undefined") {
+    const errorMessage = "process.env.SECRET_KEY is undefined";
     console.log(errorMessage);
     errorLogging(errorMessage, __filename);
     return res.status(500).end();
@@ -190,7 +192,7 @@ const patchMessageController = async (req: Request, res: Response) => {
     // Encrypting message
     const { data, iv } = encryptData(message) || {};
     if (!data) {
-      const errorMessage = "process.env.SECRET_JWT is undefined";
+      const errorMessage = "process.env.SECRET_KEY is undefined";
       console.log(errorMessage);
       errorLogging(errorMessage, __filename);
       return res.status(500).end();

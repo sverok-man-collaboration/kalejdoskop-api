@@ -1,3 +1,8 @@
+// Dotenv import
+import * as dotenv from "dotenv";
+dotenv.config();
+
+// Express import
 import express from "express";
 
 // Middlewares imports
@@ -20,8 +25,15 @@ import {
   referrerPolicy,
   xssFilter,
 } from "helmet";
+import encryptData from "./middlewares/encrypt-data.mjs";
+import errorLogging from "./middlewares/error-logging.mjs";
+import { fileURLToPath } from "url";
+const __filename = fileURLToPath(import.meta.url);
 import pkg from "body-parser";
 const { urlencoded, json } = pkg;
+
+// Utility imports
+import generateJWT from "./utils/create-key.util.mjs";
 
 // Route imports
 import loginRoutes from "./routes/login.routes.mjs";
@@ -29,9 +41,31 @@ import usersRoutes from "./routes/users.routes.mjs";
 import messagesRoutes from "./routes/messages.routes.mjs";
 import statisticsRoutes from "./routes/statistics.routes.mjs";
 
-// Random JWT key
-import generateKey from "./utils/create-key.util.mjs";
-generateKey();
+// Generate key
+generateJWT();
+
+// Encrypt first time user data
+
+const email = process.env["SECRET_EMAIL"];
+const name = process.env["SECRET_NAME"];
+
+if (email && name) {
+  const { data, moreData, iv } = encryptData(email, name) || {};
+  if (data && moreData && iv) {
+    console.log(`Encrypted email: ${data}`);
+    console.log(`Encrypted name: ${moreData}`);
+    console.log(`IV: ${iv}`);
+  } else {
+    const errorMessage = "process.env.SECRET_KEY || iv is undefined";
+    console.log(errorMessage);
+    errorLogging(errorMessage, __filename);
+  }
+} else {
+  const errorMessage =
+    "process.env.SECRET_EMAIL and process.env.SECRET_NAME are undefined";
+  console.log(errorMessage);
+  errorLogging(errorMessage, __filename);
+}
 
 const app = express();
 const PORT = 4000;

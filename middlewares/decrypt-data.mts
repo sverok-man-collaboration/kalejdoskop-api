@@ -9,11 +9,9 @@ function decryptData(data: string, iv: string) {
 
   // Decrypt the main data
   const algorithm = "aes-256-cbc";
-  const decipher = crypto.createDecipheriv(
-    algorithm,
-    secretKey,
-    Buffer.from(iv, "hex")
-  );
+  const extractedIV = Buffer.from(iv, "hex");
+  const extractedSecretKey = Buffer.from(secretKey, "hex");
+  const decipher = crypto.createDecipheriv(algorithm, extractedSecretKey, extractedIV);
   const decrpyted = Buffer.concat([
     decipher.update(Buffer.from(data, "hex")),
     decipher.final(),

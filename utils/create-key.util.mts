@@ -1,8 +1,8 @@
 import crypto from "crypto";
 
-function generateKey() {
+function generateJWT() {
   const secretKey = crypto.randomBytes(32).toString("hex");
-  console.log(`Random JWT key: ${secretKey}`);
+  return console.log(`Random key: ${secretKey}`);
 }
 
-export default generateKey;
+export default generateJWT;

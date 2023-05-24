@@ -1,5 +1,7 @@
 import { PrismaClient } from "@prisma/client";
 import errorLogging from "../middlewares/error-logging.mjs";
+import { fileURLToPath } from "url";
+const __filename = fileURLToPath(import.meta.url);
 
 // Types import
 import type { Message } from "../types/controllers/controllers.js";

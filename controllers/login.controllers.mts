@@ -3,10 +3,10 @@ import { createTransport } from "nodemailer";
 
 // JWT import
 import pkg from "jsonwebtoken";
-const { sign, verify } = pkg;
+const { sign } = pkg;
 
 // Model imports
-import { verifyUserId, getAllUsers } from "../models/users.model.mjs";
+import { getAllUsers } from "../models/users.model.mjs";
 
 // Middleware imports
 import decryptData from "../middlewares/decrypt-data.mjs";
@@ -82,7 +82,9 @@ const emailAuth = async (req: Request, res: Response) => {
     let info = await transporter.sendMail({
       to: email,
       subject: "Slutför inloggningen",
-      html: `<a href="http://localhost:4000/login/verify?token=${token}">Logga in länk</a>`,
+      html: `<a href="http://localhost:5173?token=${encodeURIComponent(
+        token
+      )}">Logga in länk</a>`,
     });
 
     console.log("Email authentication message sent: %s", info.messageId);
@@ -109,50 +111,4 @@ const emailAuth = async (req: Request, res: Response) => {
   }
 };
 
-// Verify user token method
-const verifyUser = async (req: Request, res: Response) => {
-  const token = req.query["token"]?.toString();
-  if (!token) {
-    console.log("Not a token");
-    res.status(400).end();
-    return;
-  }
-
-  // If secret key not found, throw error
-  const secretKey = process.env["SECRET_KEY"];
-  if (!secretKey) {
-    const errorMessage = "process.env.SECRET_KEY is undefined";
-    console.log(errorMessage);
-    errorLogging(errorMessage, __filename);
-    res.status(500).end();
-    return;
-  }
-
-  try {
-    // Verify the token with the secret key
-    const decodedToken = verify(token, secretKey);
-
-    // If the decoded token is not an object or it doesn't have a "userId" property, throw an error
-    if (typeof decodedToken === "string" || !decodedToken["userId"]) {
-      throw new Error("Invalid token");
-    }
-
-    // If user exists, redirect to a URL with the token in the query string
-    const [user] = await verifyUserId(decodedToken["userId"]);
-    if (user) {
-      const redirectUrl = `http://localhost:5173?token=${encodeURIComponent(
-        token
-      )}`;
-      console.log("User verified");
-      res.redirect(redirectUrl);
-    } else {
-      console.log("User not found");
-      res.status(404).end();
-    }
-  } catch (error) {
-    console.log("Invalid token");
-    res.status(401).end();
-  }
-};
-
-export { emailAuth, verifyUser };
+export { emailAuth };

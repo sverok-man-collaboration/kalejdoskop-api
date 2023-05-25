@@ -1,7 +1,7 @@
 import { Router } from "express";
 
 // Middlewares imports
-import { verifyToken } from "../middlewares/authenticate-token.mjs";
+import verifyToken from "../middlewares/authenticate-token.mjs";
 
 // Controller imports
 import {

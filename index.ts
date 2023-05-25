@@ -6,7 +6,6 @@ dotenv.config();
 import express from "express";
 
 // Middlewares imports
-import { verifyToken } from "./middlewares/authenticate-token.mjs";
 import cors from "cors";
 import {
   contentSecurityPolicy,
@@ -25,6 +24,8 @@ import {
   referrerPolicy,
   xssFilter,
 } from "helmet";
+import originCheck from "./middlewares/origin-apikey-check.mjs";
+import verifyToken from "./middlewares/authenticate-token.mjs";
 import encryptData from "./middlewares/encrypt-data.mjs";
 import errorLogging from "./middlewares/error-logging.mjs";
 import { fileURLToPath } from "url";
@@ -45,7 +46,6 @@ import statisticsRoutes from "./routes/statistics.routes.mjs";
 generateJWT();
 
 // Encrypt first time user data
-
 const email = process.env["SECRET_EMAIL"];
 const name = process.env["SECRET_NAME"];
 
@@ -90,16 +90,11 @@ app.use(xssFilter());
 app.use(urlencoded({ extended: false }));
 app.use(json());
 
-// Valid origins
-const corsOptions = {
-  origin: "*",
-};
-
 // Routes
-app.use("/login", cors(corsOptions), loginRoutes);
-app.use("/users", cors(corsOptions), verifyToken, usersRoutes);
-app.use("/messages", cors(corsOptions), messagesRoutes);
-app.use("/statistics", cors(corsOptions), statisticsRoutes);
+app.use("/login", originCheck, loginRoutes);
+app.use("/users", originCheck, verifyToken, usersRoutes);
+app.use("/messages", originCheck, messagesRoutes);
+app.use("/statistics", originCheck, statisticsRoutes);
 
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);

@@ -118,7 +118,7 @@ const postUserController = async (req: Request, res: Response) => {
 
   try {
     await postUser(data, moreData, iv);
-    return res.status(204).json({ newToken });
+    return res.status(200).json({ newToken });
   } catch (error) {
     console.log(error);
     errorLogging(error, __filename);
@@ -150,7 +150,7 @@ const deleteUserController = async (req: Request, res: Response) => {
   const idNumber = parseInt(userId);
   try {
     await deleteUser(idNumber);
-    return res.status(204).json({ newToken });
+    return res.status(200).json({ newToken });
   } catch (error) {
     errorLogging(error, __filename);
     return res.status(500).end();

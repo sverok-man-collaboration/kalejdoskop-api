@@ -182,7 +182,7 @@ const patchMessageController = async (req: Request, res: Response) => {
   if (message === "") {
     try {
       await patchStatus(id, status);
-      return res.status(204).json({ newToken });
+      return res.status(200).json({ newToken });
     } catch (error) {
       console.log(error);
       errorLogging(error, __filename);
@@ -205,7 +205,7 @@ const patchMessageController = async (req: Request, res: Response) => {
 
     try {
       await patchMessage(id, status, data);
-      return res.status(204).json({ newToken });
+      return res.status(200).json({ newToken });
     } catch (error) {
       console.log(error);
       errorLogging(error, __filename);

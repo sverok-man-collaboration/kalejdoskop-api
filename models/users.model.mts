@@ -102,10 +102,9 @@ async function verifyUserId(id: number) {
 
 async function deleteUser(id: number) {
   async function main() {
-    const result = await prisma.user.delete({
+    await prisma.user.delete({
       where: { id: id },
     });
-    console.log(result);
   }
 
   await main()

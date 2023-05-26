@@ -79,7 +79,12 @@ async function postMessage(
     });
 }
 
-async function patchMessage(id: number, status: string, message: string) {
+async function patchMessage(
+  id: number,
+  status: string,
+  message: string,
+  iv: string
+) {
   async function main() {
     await prisma.message.update({
       where: {
@@ -88,6 +93,7 @@ async function patchMessage(id: number, status: string, message: string) {
       data: {
         status: status,
         message: message,
+        iv: iv,
       },
     });
   }

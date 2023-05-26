@@ -204,7 +204,7 @@ const patchMessageController = async (req: Request, res: Response) => {
     }
 
     try {
-      await patchMessage(id, status, data);
+      await patchMessage(id, status, data, iv);
       return res.status(200).json({ newToken });
     } catch (error) {
       console.log(error);

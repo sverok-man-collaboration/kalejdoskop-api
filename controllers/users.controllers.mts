@@ -133,6 +133,12 @@ const deleteUserController = async (req: Request, res: Response) => {
     return res.status(400).end();
   }
 
+  // End execution if there is only one user
+  const users = await getAllUsers();
+  if (users.length === 1) {
+    return res.status(404).end();
+  }
+
   // Token has already been verified by authenticate-token middleware
   const authHeader = req.headers["authorization"];
   const token = authHeader?.split(" ")[1] as string;

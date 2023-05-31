@@ -1,16 +1,20 @@
 import { PrismaClient } from "@prisma/client";
+
+// Middleware imports
 import errorLogging from "../middlewares/error-logging.mjs";
+import { fileURLToPath } from "url";
+const __filename = fileURLToPath(import.meta.url);
 
 // Types import
-import type { Post } from "../types/controllers/controllers.js";
+import type { Message } from "../types/controllers/controllers.js";
 
 const prisma = new PrismaClient();
 
-async function getAllPosts() {
-  let posts: Post[] | [] = [];
+async function getAllMessages() {
+  let messages: Message[] | [] = [];
   async function main() {
-    posts =
-      await prisma.$queryRaw`SELECT * FROM "Post" ORDER BY CASE WHEN status = 'pending' THEN 1 WHEN status = 'approved' THEN 2 WHEN status = 'denied' THEN 3 END`;
+    messages =
+      await prisma.$queryRaw`SELECT * FROM "Message" ORDER BY CASE WHEN status = 'pending' THEN 1 WHEN status = 'approved' THEN 2 WHEN status = 'denied' THEN 3 END`;
   }
 
   await main()
@@ -23,14 +27,14 @@ async function getAllPosts() {
       await prisma.$disconnect();
       process.exit(1);
     });
-  return posts;
+  return messages;
 }
 
-async function getThreeRandomPosts() {
-  let posts: Post[] | [] = [];
+async function getThreeRandomMessages(room: string, object: string) {
+  let messages: Message[] | [] = [];
   async function main() {
-    posts =
-      await prisma.$queryRaw`SELECT * FROM "Post" WHERE status = 'approved' ORDER BY RANDOM() LIMIT 3`;
+    messages =
+      await prisma.$queryRaw`SELECT * FROM "Message" WHERE status = 'approved' AND room = ${room} AND object = ${object} ORDER BY RANDOM() LIMIT 3`;
   }
 
   await main()
@@ -43,16 +47,22 @@ async function getThreeRandomPosts() {
       await prisma.$disconnect();
       process.exit(1);
     });
-  return posts;
+  return messages;
 }
 
-async function addPost(room: string, object: string, message: string) {
+async function postMessage(
+  room: string,
+  object: string,
+  message: string,
+  iv: string
+) {
   async function main() {
-    await prisma.post.create({
+    await prisma.message.create({
       data: {
         room: room,
         object: object,
         message: message,
+        iv: iv,
       },
     });
   }
@@ -69,15 +79,23 @@ async function addPost(room: string, object: string, message: string) {
     });
 }
 
-async function getPost(id: number) {
-  let post: Post[] | [] = [];
+async function patchMessage(
+  id: number,
+  status: string,
+  message: string,
+  iv: string
+) {
   async function main() {
-    const result = await prisma.post.findUnique({
+    await prisma.message.update({
       where: {
         id: id,
       },
+      data: {
+        status: status,
+        message: message,
+        iv: iv,
+      },
     });
-    post = result ? [result] : [];
   }
 
   await main()
@@ -90,12 +108,11 @@ async function getPost(id: number) {
       await prisma.$disconnect();
       process.exit(1);
     });
-  return post;
 }
 
-async function updatePost(id: number, status: string) {
+async function patchStatus(id: number, status: string) {
   async function main() {
-    await prisma.post.update({
+    await prisma.message.update({
       where: {
         id: id,
       },
@@ -117,4 +134,10 @@ async function updatePost(id: number, status: string) {
     });
 }
 
-export { getAllPosts, getThreeRandomPosts, addPost, getPost, updatePost };
+export {
+  getAllMessages,
+  getThreeRandomMessages,
+  postMessage,
+  patchMessage,
+  patchStatus,
+};

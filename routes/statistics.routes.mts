@@ -2,16 +2,16 @@ import { Router } from "express";
 
 // Controller imports
 import {
-  allStatistics,
-  postStatistics,
+  getAllStatisticsController,
+  postStatisticController,
 } from "../controllers/statistics.controllers.mjs";
 
 const router = Router();
 
 // Get all statistics route
-router.get("/", allStatistics);
+router.get("/", getAllStatisticsController);
 
-// Post statistics to question 1 route
-router.post("/", postStatistics);
+// Post statistics route
+router.post("/", postStatisticController);
 
 export default router;

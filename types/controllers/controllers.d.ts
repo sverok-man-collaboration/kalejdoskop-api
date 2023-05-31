@@ -2,15 +2,17 @@ interface User {
   id: number;
   email: string;
   name: string;
+  iv?: string;
 }
 
-interface Post {
+interface Message {
   id: number;
   timestamp: Date;
   room: string;
   object: string;
   message: string;
   status: string;
+  iv?: string;
 }
 
 interface GameStatistic {
@@ -36,4 +38,4 @@ interface GameDownloaded {
   timestamp: Date;
 }
 
-export { User, Post, GameStatistic, Question, Answer, GameDownloaded };
+export { User, Message, GameStatistic, Question, Answer, GameDownloaded };

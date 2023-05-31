@@ -1,5 +1,9 @@
 import { PrismaClient } from "@prisma/client";
+
+// Middleware imports
 import errorLogging from "../middlewares/error-logging.mjs";
+import { fileURLToPath } from "url";
+const __filename = fileURLToPath(import.meta.url);
 
 // Types import
 import type { GameStatistic } from "../types/controllers/controllers.js";
@@ -33,7 +37,7 @@ async function getAllGameStatistics() {
   return gameStatistics;
 }
 
-async function addGameStatistic(answerId: number) {
+async function postGameStatistic(answerId: number) {
   async function main() {
     await prisma.gameStatistic.create({
       data: {
@@ -54,4 +58,4 @@ async function addGameStatistic(answerId: number) {
     });
 }
 
-export { getAllGameStatistics, addGameStatistic };
+export { getAllGameStatistics, postGameStatistic };

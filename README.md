@@ -91,74 +91,96 @@ This will start the Express server using the compiled files.
 
 The API provides the following endpoints:
 
-- POST `http://api.example.com/login/auth`: Authenticates a user by their email inbox.
+- POST `/login/auth`: Authenticates a user by their email inbox.
   ```json
   {
-    "email": "email"
+    "body": {
+      "email": "email"
+    }
   }
   ```
 - GET `/users`: Retrieves all users and a new token.
   ```json
-  headers: {
+  {
+    "headers": {
       "Authorization": "Bearer token"
+    }
   }
   ```
-- POST `http://api.example.com/users`: Creates a new user and retrieves a new token.
+- POST `/users`: Creates a new user and retrieves a new token.
   ```json
   {
-    "email": "email",
-    "name": "name"
+    "body": {
+      "email": "email",
+      "name": "name"
+    }
   }
   ```
-  ```json
-  headers: {
-      "Authorization": "Bearer token"
-  }
-  ```
-- DELETE `http://api.example.com/users/:id`: Deletes a user by their ID and retrieves a new token.
-  ```json
-  headers: {
-      "Authorization": "Bearer token"
-  }
-  ```
-- GET `http://api.example.com/messages`: Retrieves all messages and a new token.
-  ```json
-  headers: {
-      "Authorization": "Bearer token"
-  }
-  ```
-- GET `http://api.example.com/messages/three-random/:room/:object`: Retrieves three random messages for a specific room and object.
-- POST `http://api.example.com/messages`: Creates a new message.
   ```json
   {
-    "room": "character",
-    "object": "object",
-    "message": "message"
-  }
-  ```
-- PATCH `http://api.example.com/messages`: Updates a message and retrieves a new token.
-  ```json
-  {
-    "id": "number",
-    "status": "status",
-    "message": "message || empty"
-  }
-  ```
-  ```json
-  headers: {
+    "headers": {
       "Authorization": "Bearer token"
+    }
   }
   ```
-- GET `http://api.example.com/statistics`: Retrieves all statistics.
-- POST `http://api.example.com/statistics`: Creates a new statistic.
+- DELETE `/users/:id`: Deletes a user by their ID and retrieves a new token.
   ```json
   {
-    "answerId": "number"
+    "headers": {
+      "Authorization": "Bearer token"
+    }
+  }
+  ```
+- GET `/messages`: Retrieves all messages and a new token.
+  ```json
+  {
+    "headers": {
+      "Authorization": "Bearer token"
+    }
+  }
+  ```
+- GET `/three-random/:room/:object`: Retrieves three random messages for a specific room and object.
+- POST `/messages`: Creates a new message.
+  ```json
+  {
+    "body": {
+      "room": "character",
+      "object": "object",
+      "message": "message"
+    }
+  }
+  ```
+- PATCH `/messages`: Updates a message and retrieves a new token.
+  ```json
+  {
+    "body": {
+      "id": "number",
+      "status": "status",
+      "message": "message || empty"
+    }
   }
   ```
   ```json
-  headers: {
-    "X-API-KEY": "API_KEY"
+  {
+    "headers": {
+      "Authorization": "Bearer token"
+    }
+  }
+  ```
+- GET `/statistics`: Retrieves all statistics.
+- POST `/statistics`: Creates a new statistic.
+  ```json
+  {
+    "body": {
+      "answerId": "number"
+    }
+  }
+  ```
+  ```json
+  {
+    "headers": {
+      "X-API-KEY": "API_KEY"
+    }
   }
   ```
 

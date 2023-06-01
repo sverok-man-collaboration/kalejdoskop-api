@@ -115,7 +115,19 @@ const postMessageController = async (req: Request, res: Response) => {
   const objectType = typeof object;
   const messageType = typeof message;
 
+  const roomData = [
+    { room: "Milous", object: ["Säng", "Present"] },
+    { room: "Liams", object: ["Hantlar", "Brev"] },
+    { room: "Polkas", object: ["Dator", "Spelkonsol"] },
+  ];
+
+  // Filter roomData to include only objects that match the given room and object
+  const filteredRoomData = roomData.filter(
+    (data) => data.room === room && room.object.includes(object)
+  );
+
   if (
+    filteredRoomData.length === 0 ||
     roomType !== "string" ||
     objectType !== "string" ||
     messageType !== "string"

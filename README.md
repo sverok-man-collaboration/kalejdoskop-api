@@ -4,7 +4,7 @@ This project is an Express application designed to serve as the API for the Kale
 
 ## Getting Started
 
-These instructions will guide you through the process of setting up the project on your local machine for development and testing purposes.
+These instructions will guide you through the process of setting up the api on your local machine for development and testing purposes.
 
 ### Prerequisites
 

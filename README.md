@@ -91,7 +91,7 @@ This will start the Express server using the compiled files.
 
 The API provides the following endpoints:
 
-- POST `/login/auth`: Authenticates a user by their email inbox.
+- POST `/login/auth`: Authenticates a user by email.
   ```json
   {
     "body": {

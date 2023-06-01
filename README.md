@@ -1,6 +1,6 @@
 # Kalejdoskop Api
 
-This project is an Express application designed to serve as the API for the Kalejdokskop video game. It handles all the backend logic and routes for the project.
+This project is an Express application designed to serve as the API for the Kalejdokskop project. It handles all the backend logic and routes for the project.
 
 ## Getting Started
 

@@ -6,7 +6,10 @@ import { fileURLToPath } from "url";
 const __filename = fileURLToPath(import.meta.url);
 
 // Types import
-import type { GameStatistic } from "../types/controllers/controllers.js";
+import type {
+  GameStatistic,
+  GameDownloaded,
+} from "../types/controllers/controllers.js";
 
 const prisma = new PrismaClient();
 
@@ -58,4 +61,47 @@ async function postGameStatistic(answerId: number) {
     });
 }
 
-export { getAllGameStatistics, postGameStatistic };
+async function getAllDownloadStatistics() {
+  let downloadStatistics: GameDownloaded[] | [] = [];
+  async function main() {
+    downloadStatistics = await prisma.gameDownloaded.findMany();
+  }
+
+  await main()
+    .then(async () => {
+      await prisma.$disconnect();
+    })
+    .catch(async (error) => {
+      console.error(error);
+      errorLogging(error, __filename);
+      await prisma.$disconnect();
+      process.exit(1);
+    });
+  return downloadStatistics;
+}
+
+async function postDownloadStatistic() {
+  async function main() {
+    await prisma.gameDownloaded.create({
+      data: {},
+    });
+  }
+
+  await main()
+    .then(async () => {
+      await prisma.$disconnect();
+    })
+    .catch(async (error) => {
+      console.error(error);
+      errorLogging(error, __filename);
+      await prisma.$disconnect();
+      process.exit(1);
+    });
+}
+
+export {
+  getAllGameStatistics,
+  postGameStatistic,
+  getAllDownloadStatistics,
+  postDownloadStatistic,
+};

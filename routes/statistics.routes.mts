@@ -4,6 +4,8 @@ import { Router } from "express";
 import {
   getAllStatisticsController,
   postStatisticController,
+  getAllDownloadStatisticsController,
+  postDownloadStatisticsController,
 } from "../controllers/statistics.controllers.mjs";
 
 const router = Router();
@@ -13,5 +15,11 @@ router.get("/", getAllStatisticsController);
 
 // Post statistics route
 router.post("/", postStatisticController);
+
+// Get all download statistics route
+router.get("/downloads", getAllDownloadStatisticsController);
+
+// Post download statistics route
+router.post("/downloads", postDownloadStatisticsController);
 
 export default router;

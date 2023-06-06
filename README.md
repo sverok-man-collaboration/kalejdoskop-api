@@ -183,7 +183,7 @@ The API provides the following endpoints:
     }
   }
   ```
-- GET `/statistics/downloads`: Retrieves statistics for all gamer downloading attempts.
+- GET `/statistics/downloads`: Retrieves statistics for all game downloading attempts.
 - POST `/statistics/downloads`: Creates a new game downloading attempt statistic.
 
 ## License

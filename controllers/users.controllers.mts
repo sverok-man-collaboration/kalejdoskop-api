@@ -133,6 +133,11 @@ const deleteUserController = async (req: Request, res: Response) => {
     return res.status(400).end();
   }
 
+  const idNumber = parseInt(userId);
+  if (isNaN(idNumber)) {
+    return res.status(400).end();
+  }
+
   // End execution if there is only one user
   const users = await getAllUsers();
   if (users.length === 1) {
@@ -153,7 +158,6 @@ const deleteUserController = async (req: Request, res: Response) => {
     return res.status(500).end();
   }
 
-  const idNumber = parseInt(userId);
   try {
     await deleteUser(idNumber);
     return res.status(200).json({ newToken });

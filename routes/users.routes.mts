@@ -2,20 +2,20 @@ import { Router } from "express";
 
 // Controller imports
 import {
-  allUsers,
-  postUser,
-  deleteUser,
+  getAllUsersController,
+  postUserController,
+  deleteUserController,
 } from "../controllers/users.controllers.mjs";
 
 const router = Router();
 
 // Get all users route
-router.get("/", allUsers);
+router.get("/", getAllUsersController);
 
 // Post user route
-router.post("/", postUser);
+router.post("/", postUserController);
 
 // Delete user route
-router.delete("/:id", deleteUser);
+router.delete("/:id", deleteUserController);
 
 export default router;

@@ -1,5 +1,9 @@
 import { PrismaClient } from "@prisma/client";
+
+// Middleware imports
 import errorLogging from "../middlewares/error-logging.mjs";
+import { fileURLToPath } from "url";
+const __filename = fileURLToPath(import.meta.url);
 
 // Types import
 import type { Message } from "../types/controllers/controllers.js";
@@ -46,13 +50,19 @@ async function getThreeRandomMessages(room: string, object: string) {
   return messages;
 }
 
-async function addMessage(room: string, object: string, message: string) {
+async function postMessage(
+  room: string,
+  object: string,
+  message: string,
+  iv: string
+) {
   async function main() {
     await prisma.message.create({
       data: {
         room: room,
         object: object,
         message: message,
+        iv: iv,
       },
     });
   }
@@ -69,31 +79,12 @@ async function addMessage(room: string, object: string, message: string) {
     });
 }
 
-async function getMessage(id: number) {
-  let message: Message[] | [] = [];
-  async function main() {
-    const result = await prisma.message.findUnique({
-      where: {
-        id: id,
-      },
-    });
-    message = result ? [result] : [];
-  }
-
-  await main()
-    .then(async () => {
-      await prisma.$disconnect();
-    })
-    .catch(async (error) => {
-      console.error(error);
-      errorLogging(error, __filename);
-      await prisma.$disconnect();
-      process.exit(1);
-    });
-  return message;
-}
-
-async function updateMessage(id: number, status: string, message: string) {
+async function patchMessage(
+  id: number,
+  status: string,
+  message: string,
+  iv: string
+) {
   async function main() {
     await prisma.message.update({
       where: {
@@ -102,6 +93,7 @@ async function updateMessage(id: number, status: string, message: string) {
       data: {
         status: status,
         message: message,
+        iv: iv,
       },
     });
   }
@@ -118,7 +110,7 @@ async function updateMessage(id: number, status: string, message: string) {
     });
 }
 
-async function updateStatus(id: number, status: string) {
+async function patchStatus(id: number, status: string) {
   async function main() {
     await prisma.message.update({
       where: {
@@ -145,8 +137,7 @@ async function updateStatus(id: number, status: string) {
 export {
   getAllMessages,
   getThreeRandomMessages,
-  addMessage,
-  getMessage,
-  updateMessage,
-  updateStatus,
+  postMessage,
+  patchMessage,
+  patchStatus,
 };

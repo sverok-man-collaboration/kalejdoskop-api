@@ -1,52 +1,54 @@
-import type { Request, Response, NextFunction } from "express";
-import * as dotenv from "dotenv";
-dotenv.config();
+// JWT import
 import pkg from "jsonwebtoken";
 const { verify } = pkg;
-import errorLogging from "../middlewares/error-logging.mjs";
 
 // Model imports
 import { verifyUserId } from "../models/users.model.mjs";
 
+// Middleware imports
+import errorLogging from "../middlewares/error-logging.mjs";
+import { fileURLToPath } from "url";
+const __filename = fileURLToPath(import.meta.url);
+
+// Type imports
+import type { Request, Response, NextFunction } from "express";
+
 const verifyToken = async (req: Request, res: Response, next: NextFunction) => {
   const authHeader = req.headers["authorization"]?.toString();
   const token = authHeader?.split(" ")[1];
-  const secret = process.env["SECRET_JWT"];
+  const secret = process.env["SECRET_KEY"];
 
-  if (secret && token) {
-    try {
-      const decodedToken = verify(token, secret);
-
-      if (typeof decodedToken === "string" || !decodedToken["userId"]) {
-        res.status(401).end();
-        throw new Error("Invalid token");
-      }
-      try {
-        const data = await verifyUserId(decodedToken["userId"]);
-        const user = data[0];
-        if (user) {
-          next();
-        } else {
-          res.status(404).end();
-        }
-      } catch (error) {
-        console.log(error);
-        errorLogging(error, __filename);
-        res.status(500).end();
-      }
-    } catch (error) {
-      console.log("Invalid token");
-      res.status(401).end();
-    }
-  } else if (authHeader === undefined) {
-    console.log("Not a token");
-    res.status(400).end();
-  } else {
-    const errorMessage = "process.env.SECRET_JWT is undefined";
+  if (!token) {
+    console.log("Invalid token");
+    return res.status(401).end();
+  } else if (!secret) {
+    const errorMessage = "process.env.SECRET_KEY is undefined";
     console.log(errorMessage);
     errorLogging(errorMessage, __filename);
-    res.status(500).end();
+    return res.status(500).end();
+  }
+
+  try {
+    const decodedToken = verify(token, secret);
+
+    if (typeof decodedToken === "string" || !decodedToken["userId"]) {
+      console.log("Invalid token");
+      return res.status(401).end();
+    }
+
+    const data = await verifyUserId(decodedToken["userId"]);
+    const user = data[0];
+
+    if (!user) {
+      return res.status(404).end();
+    }
+
+    return next();
+  } catch (error) {
+    console.log(error);
+    errorLogging(error, __filename);
+    return res.status(500).end();
   }
 };
 
-export { verifyToken };
+export default verifyToken;

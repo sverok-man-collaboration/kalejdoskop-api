@@ -1,7 +1,11 @@
+// Dotenv import
+import * as dotenv from "dotenv";
+dotenv.config();
+
+// Express import
 import express from "express";
 
 // Middlewares imports
-import { verifyToken } from "./middlewares/authenticate-token.mjs";
 import cors from "cors";
 import {
   contentSecurityPolicy,
@@ -20,8 +24,14 @@ import {
   referrerPolicy,
   xssFilter,
 } from "helmet";
+import originCheck from "./middlewares/origin-apikey-check.mjs";
+import verifyToken from "./middlewares/authenticate-token.mjs";
+import firstUser from "./middlewares/first-user.mjs";
 import pkg from "body-parser";
 const { urlencoded, json } = pkg;
+
+// Utility imports
+import generateJWT from "./utils/create-key.util.mjs";
 
 // Route imports
 import loginRoutes from "./routes/login.routes.mjs";
@@ -29,9 +39,11 @@ import usersRoutes from "./routes/users.routes.mjs";
 import messagesRoutes from "./routes/messages.routes.mjs";
 import statisticsRoutes from "./routes/statistics.routes.mjs";
 
-// Random SHA-256 key
-import { SHAKey } from "./utils/create-key.util.mjs";
-SHAKey();
+// Generate key
+generateJWT();
+
+// Add first time user
+firstUser();
 
 const app = express();
 const PORT = 4000;
@@ -56,16 +68,11 @@ app.use(xssFilter());
 app.use(urlencoded({ extended: false }));
 app.use(json());
 
-// Valid origins
-const corsOptions = {
-  origin: "*",
-};
-
 // Routes
-app.use("/login", cors(corsOptions), loginRoutes);
-app.use("/users", cors(corsOptions), verifyToken, usersRoutes);
-app.use("/messages", cors(corsOptions), messagesRoutes);
-app.use("/statistics", cors(corsOptions), statisticsRoutes);
+app.use("/login", originCheck, loginRoutes);
+app.use("/users", originCheck, verifyToken, usersRoutes);
+app.use("/messages", originCheck, messagesRoutes);
+app.use("/statistics", originCheck, statisticsRoutes);
 
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);

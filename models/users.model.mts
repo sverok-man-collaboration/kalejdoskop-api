@@ -1,5 +1,9 @@
 import { PrismaClient } from "@prisma/client";
+
+// Middleware imports
 import errorLogging from "../middlewares/error-logging.mjs";
+import { fileURLToPath } from "url";
+const __filename = fileURLToPath(import.meta.url);
 
 // Types import
 import type { User } from "../types/controllers/controllers.js";
@@ -25,12 +29,13 @@ async function getAllUsers() {
   return users;
 }
 
-async function addUser(email: string, name: string) {
+async function postUser(email: string, name: string, iv: string) {
   async function main() {
     await prisma.user.create({
       data: {
         email: email,
         name: name,
+        iv: iv,
       },
     });
   }
@@ -47,7 +52,7 @@ async function addUser(email: string, name: string) {
     });
 }
 
-async function verifyUserEmail(email: string) {
+async function getUser(email: string) {
   let user: User[] | [] = [];
   async function main() {
     const result = await prisma.user.findUnique({
@@ -95,12 +100,11 @@ async function verifyUserId(id: number) {
   return user;
 }
 
-async function removeUser(id: number) {
+async function deleteUser(id: number) {
   async function main() {
-    const result = await prisma.user.delete({
+    await prisma.user.delete({
       where: { id: id },
     });
-    console.log(result);
   }
 
   await main()
@@ -115,4 +119,4 @@ async function removeUser(id: number) {
     });
 }
 
-export { getAllUsers, addUser, verifyUserEmail, verifyUserId, removeUser };
+export { getAllUsers, postUser, getUser, verifyUserId, deleteUser };

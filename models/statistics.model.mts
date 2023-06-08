@@ -9,6 +9,8 @@ const __filename = fileURLToPath(import.meta.url);
 import type {
   GameStatistic,
   GameDownloaded,
+  Question,
+  Answer,
 } from "../types/controllers/controllers.js";
 
 const prisma = new PrismaClient();
@@ -99,9 +101,101 @@ async function postDownloadStatistic() {
     });
 }
 
+async function getAllQuestionsData() {
+  let questionsData: Question[] | [] = [];
+  async function main() {
+    questionsData = await prisma.question.findMany();
+  }
+
+  await main()
+    .then(async () => {
+      await prisma.$disconnect();
+    })
+    .catch(async (error) => {
+      console.error(error);
+      errorLogging(error, __filename);
+      await prisma.$disconnect();
+      process.exit(1);
+    });
+  return questionsData;
+}
+
+async function postQuestionData(
+  id: number,
+  question: string,
+  character: string
+) {
+  async function main() {
+    await prisma.question.create({
+      data: {
+        id: id,
+        question: question,
+        character: character,
+      },
+    });
+  }
+
+  await main()
+    .then(async () => {
+      await prisma.$disconnect();
+    })
+    .catch(async (error) => {
+      console.error(error);
+      errorLogging(error, __filename);
+      await prisma.$disconnect();
+      process.exit(1);
+    });
+}
+
+async function getAllAnswersData() {
+  let answersData: Answer[] | [] = [];
+  async function main() {
+    answersData = await prisma.answer.findMany();
+  }
+
+  await main()
+    .then(async () => {
+      await prisma.$disconnect();
+    })
+    .catch(async (error) => {
+      console.error(error);
+      errorLogging(error, __filename);
+      await prisma.$disconnect();
+      process.exit(1);
+    });
+  return answersData;
+}
+
+async function postAnswerData(id: number, answer: string, questionId: number) {
+  async function main() {
+    await prisma.answer.create({
+      data: {
+        id: id,
+        answer: answer,
+        questionId: questionId,
+      },
+    });
+  }
+
+  await main()
+    .then(async () => {
+      await prisma.$disconnect();
+    })
+    .catch(async (error) => {
+      console.error(error);
+      errorLogging(error, __filename);
+      await prisma.$disconnect();
+      process.exit(1);
+    });
+}
+
 export {
   getAllGameStatistics,
   postGameStatistic,
   getAllDownloadStatistics,
   postDownloadStatistic,
+  getAllQuestionsData,
+  postQuestionData,
+  getAllAnswersData,
+  postAnswerData,
 };

@@ -31,17 +31,11 @@ import statisticsData from "./middlewares/statistics-data.mjs";
 import pkg from "body-parser";
 const { urlencoded, json } = pkg;
 
-// Utility imports
-import generateJWT from "./utils/create-key.util.mjs";
-
 // Route imports
 import loginRoutes from "./routes/login.routes.mjs";
 import usersRoutes from "./routes/users.routes.mjs";
 import messagesRoutes from "./routes/messages.routes.mjs";
 import statisticsRoutes from "./routes/statistics.routes.mjs";
-
-// Generate key
-generateJWT();
 
 // Add first time user
 firstUser();

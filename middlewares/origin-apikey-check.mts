@@ -11,7 +11,6 @@ const originCheck = async (
   res: Response,
   next: NextFunction
 ) => {
-  // Check if requested origin is undefined
   const origin = req.get("origin") as any;
 
   // Check if process.env.SECRET_API_KEY is undefined

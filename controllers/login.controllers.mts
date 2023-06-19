@@ -20,6 +20,10 @@ import type { Request, Response } from "express";
 // Email authentication method
 const emailAuth = async (req: Request, res: Response) => {
   const { email } = req.body;
+  const emailType = typeof email;
+  if (emailType !== "string") {
+    return res.status(400).end();
+  }
 
   try {
     const emailLowercase = email.toLowerCase();
@@ -55,10 +59,14 @@ const emailAuth = async (req: Request, res: Response) => {
       return;
     }
 
-    // If secret key not found, throw error
+    // If .env process error, throw error
     const secret = process.env["SECRET_KEY"];
-    if (!secret) {
-      throw new Error("process.env.SECRET_KEY is undefined");
+    const SMTPUser = process.env["SECRET_USER"];
+    const SMTPPass = process.env["SECRET_PASS"];
+    if (!secret || !SMTPUser || !SMTPPass) {
+      throw new Error(
+        "process.env.SECRET_KEY is undefined || process.env.SECRET_USER || process.env.SECRET_PASS is undefined"
+      );
     }
 
     // Create JWT token with user ID and secret key

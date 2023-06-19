@@ -20,7 +20,7 @@ const verifyToken = async (req: Request, res: Response, next: NextFunction) => {
 
   if (!token) {
     console.log("Invalid token");
-    return res.status(401).end();
+    return res.status(400).end();
   } else if (!secret) {
     const errorMessage = "process.env.SECRET_KEY is undefined";
     console.log(errorMessage);
@@ -33,14 +33,14 @@ const verifyToken = async (req: Request, res: Response, next: NextFunction) => {
 
     if (typeof decodedToken === "string" || !decodedToken["userId"]) {
       console.log("Invalid token");
-      return res.status(401).end();
+      return res.status(400).end();
     }
 
     const data = await verifyUserId(decodedToken["userId"]);
     const user = data[0];
 
     if (!user) {
-      return res.status(404).end();
+      return res.status(401).end();
     }
 
     return next();

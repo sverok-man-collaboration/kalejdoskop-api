@@ -37,7 +37,7 @@ async function firstUser() {
     }
   } else {
     const errorMessage =
-      "process.env.SECRET_EMAIL and process.env.SECRET_NAME are undefined";
+      "process.env.SECRET_EMAIL || process.env.SECRET_NAME are undefined";
     console.log(errorMessage);
     errorLogging(errorMessage, __filename);
     return;

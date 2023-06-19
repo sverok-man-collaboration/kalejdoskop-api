@@ -22,7 +22,7 @@ const emailAuth = async (req: Request, res: Response) => {
   const { email } = req.body;
   const emailType = typeof email;
   if (emailType !== "string") {
-    return res.status(400).end();
+    res.status(400).end();
   }
 
   try {

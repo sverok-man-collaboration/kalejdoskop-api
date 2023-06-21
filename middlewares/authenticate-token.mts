@@ -1,6 +1,6 @@
 // JWT import
 import pkg from "jsonwebtoken";
-const { verify } = pkg;
+const { verify, TokenExpiredError } = pkg;
 
 // Model imports
 import { verifyUserId } from "../models/users.model.mjs";
@@ -45,6 +45,10 @@ const verifyToken = async (req: Request, res: Response, next: NextFunction) => {
 
     return next();
   } catch (error) {
+    if (error instanceof TokenExpiredError) {
+      return res.status(401).end();
+    }
+
     console.log(error);
     errorLogging(error, __filename);
     return res.status(500).end();

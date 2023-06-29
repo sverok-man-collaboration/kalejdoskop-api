@@ -43,6 +43,8 @@ If both commands return a version number, then the installation was successful.
 
    You will need to create a `.env` file in the root of the project. You can use the provided `.env.example` file as a template. Simply copy the `.env.example` file and rename the copy to `.env`. Then fill in the required information.
 
+   The Project key and API key both need to be a random 256-bit key converted into a string of 64 heaxadecimal characters.
+
 4. **Setup Database**
 
    This project uses SQLite as its database. If you don't have a SQLite database, you can create one by running the following command inside the repository directory:

@@ -196,4 +196,4 @@ There are three alternatives to restore your database from a backup:
 
 - 0: Replaces the current database with the most recent backup.
 - 1: Replaces the current database with the backup prior to the most recent one.
-- 2: Refreshes the current database using the oldest available backup.
+- 2: Replaces the current database with the oldest backup.

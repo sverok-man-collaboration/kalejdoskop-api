@@ -12,7 +12,7 @@ const maxBackups = 3;
 
 function databaseBackup() {
   // Defines the cron schedule for the backup script
-  cron.schedule("0 0 * * 0", async () => {
+  cron.schedule("* * * * *", async () => {
     try {
       // Gets the path to the database file
       let databasePath: string | undefined;
@@ -33,6 +33,11 @@ function databaseBackup() {
         .replace(/,/g, "-");
       const backupFileName = `database-${timestamp}.sqlite`;
       const backupFilePath = `${backupDirPath}/${backupFileName}`;
+
+      // Check if the directory exists, if not, create it
+      if (!fs.existsSync(backupDirPath)) {
+        fs.mkdirSync(backupDirPath);
+      }
 
       // The `exec()` method is used to run `sqlite3` commands
       exec(

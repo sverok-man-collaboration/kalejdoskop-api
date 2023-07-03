@@ -1,7 +1,7 @@
 {
   "name": "kalejdoskop-api",
   "private": true,
-  "version": "0.9.5",
+  "version": "0.9.8",
   "type": "module",
   "main": "dist/index.js",
   "scripts": {
@@ -10,7 +10,7 @@
     "build": "npm install && tsc --project tsconfig.json && copyfiles .env dist"
   },
   "engines": {
-    "node": "18.16.0"
+    "node": "18.16.1"
   },
   "dependencies": {
     "@prisma/client": "^4.15.0",

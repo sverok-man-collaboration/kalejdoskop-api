@@ -2,11 +2,11 @@ import fs from "fs";
 import path from "path";
 
 const directory = "backups";
+const backupDirPath = "./backups";
 const target = "prisma/database.sqlite";
 
 // Access command line arguments
 const args = process.argv.slice(2);
-console.log(args);
 
 if (args.length !== 1) {
   console.error("Please provide a single argument to select the source file");
@@ -19,8 +19,13 @@ const chosenIndex = Number(args[0]);
 fs.readdir(directory, (error, files) => {
   if (error) throw error;
 
-  // Filter the files to only include ones that start with "database"
-  const backupFiles = files.filter((file) => file.startsWith("database"));
+  // Sorts the backup files in descending order by the creation time
+  const backupFiles = files.sort((a: string, b: string) => {
+    return (
+      fs.statSync(`${backupDirPath}/${b}`).ctime.getTime() -
+      fs.statSync(`${backupDirPath}/${a}`).ctime.getTime()
+    );
+  });
 
   // Check if the argument is a valid index
   if (

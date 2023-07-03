@@ -12,7 +12,7 @@ const maxBackups = 3;
 
 function databaseBackup() {
   // Defines the cron schedule for the backup script
-  cron.schedule("* * * * *", async () => {
+  cron.schedule("0 0 * * 0", async () => {
     try {
       // Gets the path to the database file
       let databasePath: string | undefined;

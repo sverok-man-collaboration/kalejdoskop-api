@@ -81,14 +81,6 @@ npm run start
 
 This will start the Express server using the compiled files.
 
-## Testing
-
-[Include details about how to run tests, if applicable]
-
-## Deployment
-
-[Include details about how to deploy the application, if applicable]
-
 ## Endpoints
 
 The API provides the following endpoints:
@@ -188,17 +180,6 @@ The API provides the following endpoints:
 - GET `/statistics/downloads`: Retrieves statistics for all game downloading attempts.
 - POST `/statistics/downloads`: Creates a new game downloading attempt statistic.
 
-## License
+## Error logs
 
-This project is licensed under the [INSERT LICENSE NAME HERE] License - see the [LICENSE.md](LICENSE.md) file for details.
-
-## Contact
-
-For any questions, you can reach us at [INSERT CONTACT METHOD HERE]
-
-## Acknowledgments
-
-- [Person/Team/Source Name](#)
-- [Person/Team/Source Name](#)
-
-This README is a work in progress.
+A server error log file is created in the root directory when the first server error log is encountered.

@@ -26,5 +26,5 @@ dist-ssr
 
 # Other
 .env
-dev.db
-dev.db-journal
+database.sqlite
+database.sqlite-journal

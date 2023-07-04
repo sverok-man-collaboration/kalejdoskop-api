@@ -7,8 +7,7 @@
   "scripts": {
     "start": "ts-node dist/index.js",
     "dev": "ts-node index.ts",
-    "build": "npm install && tsc --project tsconfig.json && copyfiles .env dist",
-    "overwrite": "node dist/scripts/overwriteFile.js"
+    "build": "npm install && tsc --project tsconfig.json && copyfiles .env dist"
   },
   "engines": {
     "node": "18.16.1"

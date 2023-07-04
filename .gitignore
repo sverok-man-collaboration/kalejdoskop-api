@@ -28,4 +28,3 @@ dist-ssr
 .env
 database.sqlite
 database.sqlite-journal
-backups

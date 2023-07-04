@@ -28,7 +28,6 @@ import originCheck from "./middlewares/origin-apikey-check.mjs";
 import verifyToken from "./middlewares/authenticate-token.mjs";
 import firstUser from "./middlewares/first-user.mjs";
 import statisticsData from "./middlewares/statistics-data.mjs";
-import databaseBackup from "./middlewares/backup-database.mjs";
 import pkg from "body-parser";
 const { urlencoded, json } = pkg;
 
@@ -43,9 +42,6 @@ firstUser();
 
 // Add statistics data
 statisticsData();
-
-// Backup Database
-databaseBackup();
 
 const app = express();
 const PORT = 4000;

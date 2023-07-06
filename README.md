@@ -55,7 +55,7 @@ If both commands return a version number, then the installation was successful.
 
 ### Running the project
 
-Once you have completed the installation, you can now run the application in a development server using:
+Once you have completed the installation, you can now run the application in a development environment:
 
 ```sh
 npm run dev
@@ -79,7 +79,7 @@ To execute the compiled application, you can run:
 npm run start
 ```
 
-This will start the Express server using the compiled files.
+This will execute the Express application by using the compiled JavaScript files.
 
 ## Endpoints
 

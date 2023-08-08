@@ -183,17 +183,3 @@ The API provides the following endpoints:
 ## Error logs
 
 A server error log file is created in the root directory when the first server error log is encountered.
-
-## Restore database from backup
-
-In order to overwrite the database from a backup, you can run the following command:
-
-```sh
-  npm run overwrite -- 0
-```
-
-There are three alternatives to restore your database from a backup:
-
-- 0: Replaces the current database with the most recent backup.
-- 1: Replaces the current database with the backup prior to the most recent one.
-- 2: Replaces the current database with the oldest backup.

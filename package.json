@@ -10,17 +10,16 @@
     "build": "npm install && tsc --project tsconfig.json && copyfiles .env dist"
   },
   "engines": {
-    "node": "18.16.1"
+    "node": "18.17.0"
   },
   "dependencies": {
-    "@prisma/client": "^4.16.2",
+    "@prisma/client": "^5.1.1",
     "body-parser": "^1.20.1",
     "cors": "^2.8.5",
     "dotenv": "^16.0.3",
     "express": "^4.18.2",
     "helmet": "^6.0.1",
     "jsonwebtoken": "^9.0.0",
-    "node-cron": "^3.0.2",
     "nodemailer": "^6.9.1"
   },
   "devDependencies": {
@@ -28,10 +27,9 @@
     "@types/express": "^4.17.17",
     "@types/jsonwebtoken": "^9.0.1",
     "@types/node": "^18.14.2",
-    "@types/node-cron": "^3.0.7",
     "@types/nodemailer": "^6.4.7",
     "copyfiles": "^2.4.1",
-    "prisma": "^4.16.2",
+    "prisma": "^5.1.1",
     "ts-node": "^10.9.1",
     "typescript": "^4.9.5"
   }

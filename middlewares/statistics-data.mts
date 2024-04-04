@@ -28,6 +28,7 @@ async function statisticsData() {
   }
   const questions = [
     { id: 1, question: "Hur ska jag göra med Naomi?", character: "Milou" },
+    { id: 2, question: "Klarade Milou provet?", character: "Milou" },
   ];
   for (const question of questions) {
     try {
@@ -46,6 +47,8 @@ async function statisticsData() {
     { id: 1, answer: "Ge henne en plushie", questionId: 1 },
     { id: 2, answer: "Skicka DM om Digitala Drakar", questionId: 1 },
     { id: 3, answer: "Ingenting", questionId: 1 },
+    { id: 4, answer: "Ja", questionId: 2 },
+    { id: 5, answer: "Nej", questionId: 2 },
   ];
   for (const answer of answers) {
     try {

@@ -8,7 +8,7 @@ These instructions will guide you through the process of setting up the api on y
 
 ### Prerequisites
 
-Before you can run this project, you will need to have Node.js and npm installed on your computer. You can download Node.js from [here](https://nodejs.org/) and npm is included in the installation.
+Before you can run this project, you will need to have Node.js version 18.12.1 and npm installed on your computer. You can download Node.js from [here](https://nodejs.org/) and npm is included in the installation.
 
 You can check if Node.js and npm are installed correctly by running the following commands in your terminal:
 
@@ -47,7 +47,7 @@ If both commands return a version number, then the installation was successful.
 
 4. **Setup Database**
 
-   This project uses SQLite as its database. If you don't have a SQLite database, you can create one by running the following command inside the repository directory:
+   This project uses SQLite as its database. Run this the following command inside the repository directory:
 
    ```sh
    npx prisma migrate dev --name init

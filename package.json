@@ -5,22 +5,22 @@
   "type": "module",
   "main": "dist/index.js",
   "scripts": {
-    "start": "ts-node dist/index.js",
+    "start": "node dist/index.js",
     "dev": "ts-node index.ts",
     "build": "npm install && tsc --project tsconfig.json && copyfiles .env dist"
   },
   "engines": {
-    "node": "18.17.0"
+    "node": "18.12.1"
   },
   "dependencies": {
-    "@prisma/client": "^5.1.1",
+    "@prisma/client": "^5.7.0",
     "body-parser": "^1.20.1",
     "cors": "^2.8.5",
     "dotenv": "^16.0.3",
-    "express": "^4.18.2",
+    "express": "^4.19.2",
     "helmet": "^6.0.1",
     "jsonwebtoken": "^9.0.0",
-    "nodemailer": "^6.9.1"
+    "nodemailer": "^6.9.9"
   },
   "devDependencies": {
     "@types/cors": "^2.8.13",
@@ -29,7 +29,7 @@
     "@types/node": "^18.14.2",
     "@types/nodemailer": "^6.4.7",
     "copyfiles": "^2.4.1",
-    "prisma": "^5.1.1",
+    "prisma": "^5.7.0",
     "ts-node": "^10.9.1",
     "typescript": "^4.9.5"
   }
